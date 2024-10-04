@@ -38,14 +38,16 @@ function HomePage({ teamlist }) {
         <div className="md:flex md:gap-4 md:items-center">
           {" "}
           <p className="bg-white py-2 px-3 text-[#F9BD48] font-[800] w-[180px] h-[36px] text-[20px] md:text-[40px] mb-3 flex justify-center items-center md:w-[360px] md:h-[66px]">
-            17<sup>th</sup> <span className="ml-2">EDITION</span>
+            18<sup>th</sup> <span className="ml-2">EDITION</span>
           </p>
-          <p className="font-[800] text-[16px] md:text-[24px] md:leading-[29.26px] md:ml-[40px]">
-            26<sup>th</sup> - 29<sup>th</sup> <br className="hidden md:flex" />
-            October, 2023
-          </p>
+          
         </div>
-        <WinnersAnnouncement teamlist={winnerTeamList} />
+        {/* <WinnersAnnouncement teamlist={winnerTeamList} /> */}
+        <p className="font-[800] text-[24px] md:text-[32px] md:leading-[29.26px] md:ml-[48px]">
+            {/* 26<sup>th</sup> - 29<sup>th</sup> <br className="hidden md:flex" />
+            October, 2023 */}
+            coming soon...
+          </p>
       </div>
 
       <div className="w-full md:w-4/5 md:mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
