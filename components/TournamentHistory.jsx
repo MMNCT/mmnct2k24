@@ -31,9 +31,10 @@ const TournamentHistory = () => {
         </strong>
         . <br />
         <br />
-        The <strong>17th</strong> edition of the tournament will commence on 
-        <strong> October 26</strong> and end with the{" "}
-        <strong>finale on October 29</strong>. <br />
+        Dates of <strong>18th</strong> edition of the tournament will be announced soon
+        {/* <strong> October 26</strong> and end with the{" "}
+        <strong>finale on October 29</strong>. */}
+         <br />
         <br />
         The teams will comprise of B.Tech, M.Sc., M.Tech, Ph.D. students,
         localites, mess staff, and Faculty members. <br />
