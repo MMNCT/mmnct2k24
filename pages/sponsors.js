@@ -24,9 +24,9 @@ const contact_persons = [
     contact: "916202561409",
   },
   {
-    name: "Rishi Sharma",
-    position: "Coordinator, MMNCT",
-    contact: "919162353578",
+    name: "Pryanshu Kumar",
+    position: "Sponsorhip Head, MMNCT",
+    contact: "917903310330",
   },
   {
     name: "Ravi Raj",

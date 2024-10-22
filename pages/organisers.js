@@ -22,7 +22,7 @@ export async function getServerSideProps() {
   let content_creators = [];
   let in_house = [];
   let president = [];
-
+  let sponsorship=[];
   querySnapshot.forEach((doc) => {
     let data = doc.data();
     if (data.position == "president") {
@@ -38,6 +38,9 @@ export async function getServerSideProps() {
     } else if (data.position == "Infra and In-House") {
       in_house.push(data);
     }
+    else if (data.position == "sponsorship") {
+      sponsorship.push(data);
+    }
   });
   president = president.reverse()
   return {
@@ -47,6 +50,7 @@ export async function getServerSideProps() {
       designers,
       content_creators,
       in_house,
+      sponsorship
     },
   };
 }
@@ -57,7 +61,9 @@ export default function Organisers({
   designers,
   content_creators,
   in_house,
+  sponsorship
 }) {
+  console.log(sponsorship);
   return (
     <div>
       <Head>
@@ -157,6 +163,25 @@ export default function Organisers({
           {designers.length != 0 &&
             designers.map((designer, index) => {
               return <Teamcard details={designer} key={index} />;
+            })}
+        </div>
+      </div>
+      <div className="text-center mt-28 mb-10">
+        <h1 className="text-3xl font-semibold mb-2">Sponsorship</h1>
+        <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-3/12 mx-auto mb-4 lg:mb-8"></div>
+        {sponsorship.length == 0 && (
+          <Image
+            src="/loader.gif"
+            width={330}
+            height={400}
+            className="w-full md:w-2/5 md:mx-auto md:rounded-xl"
+            alt="loading"
+          />
+        )}
+        <div className="grid gap-2 lg:grid-cols-1 justify-items-center place-items-center ">
+          {sponsorship.length != 0 &&
+            sponsorship.map((sponsor, index) => {
+              return <Teamcard details={sponsor} key={index} />;
             })}
         </div>
       </div>
