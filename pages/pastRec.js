@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { db, dbRef, storage } from "../components/db/Firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, doc, updateDoc } from "firebase/firestore";
 import { listAll, ref, getDownloadURL } from "firebase/storage";
 import Link from "next/link";
 import Head from "next/head";
@@ -23,28 +23,40 @@ export async function getServerSideProps() {
     temp.id = doc.id;
     data.push(temp);
   });
-
+  
    querySnapshot = await getDocs(collection(db, "pastYearMatches"));
   let list = [];
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
     // console.log(doc.id, " => ", doc.data());
+    if(doc.data().edition ==="16")
     list.push(doc.data());
   });
+  
   list.sort((a, b) => b.MatchNo - a.MatchNo);
+  // list.sort((a, b) => b?.id - a?.id);
+  // let count=0;
+  // for(let i of list)
+  // {
+  //    if(i?.id !==undefined)
+  //    {
+  //      console.log(i.id);
+
+  //      const matchDocRef = doc(db, "pastYearMatches",i.docId);
+
+  //      // Update the document by adding the 'edition' field
+  //      await updateDoc(matchDocRef, {
+  //        edition: "17" // Assign your desired edition value here
+  //      });
+  //      console.log(`Added 'edition' field to Match ID: ${i.id}`);
+  //    }
+  //   //  console.log(count);
+  // }
+  // console.log(list);
   // console.log(list);
 
   let organizers=[];
    
-  // const Snapshot = await getDocs(
-  //   query(collection(db, "team"), orderBy("name", "desc"))
-  // );
-  // Snapshot.forEach((doc) => {
-  //   let data = doc.data();
-  //   if (data.position == "developer" && data.edition == "16" ) {
-  //     organizers.push(data);
-  //   }
-  // });
    querySnapshot = await getDocs(
     query(collection(db, "team"), orderBy("name", "desc"))
   );
@@ -56,15 +68,15 @@ export async function getServerSideProps() {
 
   querySnapshot.forEach((doc) => {
     let data = doc.data();
-    if (data.position == "coordinator" && data.edition == "16") {
+    if (data.position == "coordinator" ) {
       coordinators.push(data);
-    } else if (data.position == "developer" && data.edition == "16") {
+    } else if (data.position == "developer" ) {
       developers.push(data);
-    } else if (data.position == "designer" && data.edition == "16") {
+    } else if (data.position == "designer" ) {
       designers.push(data);
-    } else if (data.position == "content writer" && data.edition == "16" ) {
+    } else if (data.position == "content writer"  ) {
       content_creators.push(data);
-    } else if (data.position == "Infra and In-House" && data.edition == "16" ){
+    } else if (data.position == "Infra and In-House"  ){
       in_house.push(data);
     }
   });
@@ -725,7 +737,7 @@ return (
                 <select value={edition} onChange={(e)=>setEdition(e.target.value)} className=" cursor-pointer ml-2 font-semibold   text-[#414447]  border-2 rounded-lg text-[26px]" > 
                    
                     <option value={"16"} className="rounded-lg hover:cursor-pointer  font-semibold text-[20px] ">16</option>
-                    {/* <option value={"17"}className="rounded-lg hover:cursor-pointer font-semibold text-[20px] ">17</option> */}
+                    <option value={"17"}className="rounded-lg hover:cursor-pointer font-semibold text-[20px] ">17</option>
               </select>
               </span>
               </p>
