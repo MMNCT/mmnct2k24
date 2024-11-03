@@ -1,11 +1,9 @@
 import Image from "next/image";
 import { totalScore, getOver } from "../components/matchFunctions";
 import teams from "./teams";
+import Link from "next/link";
 const PastMatchCard = (props) => {
-  const teamStyle = "flex items-center gap-2 justify-evenly w-2/5 ";
-  const teamName = "font-extrabold text-lg md:text-lg";
-  const shortformstyle = "h-[68px] md:h-[80px] md:w-[80px] rounded-full";
-  const teamNameStyle = "text-center flex flex-col items-center";
+  
   let matchData = props["matchData"][0];
   
  
@@ -34,93 +32,7 @@ const PastMatchCard = (props) => {
                     </p>
                   </div>
                 )}
-                <div className="flex justify-evenly w-full pt-4">
-                  {/* team 1 */}
-                  <div className={`${teamStyle}`}>
-                    <div className={teamNameStyle}>
-                      <img
-                        alt="team-logo"
-                        className={shortformstyle}
-                        style={{
-                          backgroundColor: teams[curElem.Team1Id]?.themeColor,
-                        }}
-                        src={teams[curElem.Team1Id]?.teamLogo}
-                      />
-                      <p className={`${teamName} ml-1 lg:hidden`}>
-                        {teams[curElem.Team1Id]?.teamCode}
-                      </p>
-                      <p className={`${teamName} ml-1 hidden lg:flex`}>
-                        {curElem.Team1Id}
-                      </p>
-                      <p className="text-[12px] text-gray-500">
-                        ({teams[curElem.Team1Id]?.teamType})
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-orange-500 font-bold">
-                        {
-                          curElem.Team1Score
-                        
-                        }
-                        
-                      </p>
-                      <p className="text-orange-500 font-bold">
-                        
-                        ({
-                            (curElem.Team1Over)
-                        })
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    {" "}
-                    <Image src="/vector-8.png" height={80} width={80} />
-                  </div>
-                  {/* current score and over */}
-
-                  <div className={teamStyle}>
-                    <div>
-                      <p className="text-orange-500 font-bold">
-                        {curElem.Team2Score}
-                      </p>
-                      <p className="text-orange-500 font-bold">
-                        
-                        ({
-                          curElem.Team2Over
-                            
-                        })
-                        
-                      </p>
-                    </div>
-                    <div className={teamNameStyle}>
-                      {/* {console.log(curElem.Team2Id)} */}
-                      <img
-                        alt="team-logo"
-                        className={shortformstyle}
-                        style={{
-                          backgroundColor: teams[curElem.Team2Id]?.themeColor,
-                        }}
-                        src={teams[curElem.Team2Id]?.teamLogo}
-                      />
-                      <p className={`${teamName} ml-1 lg:hidden`}>
-                        {teams[curElem.Team2Id]?.teamCode}
-                      </p>
-                      <p className={`${teamName} ml-1 hidden lg:flex`}>
-                        {curElem.Team2Id}
-                      </p>
-                      <p className="text-[12px] text-gray-500">
-                        ({teams[curElem.Team2Id]?.teamType})
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                {/* timing and date */}
-                <div className="flex flex-col items-center justify-center px-2.5">
-                  <p className="text-black-400">{curElem.finalComment}</p>
-                  <p className="text-black-400">
-                    <sup>{curElem.timeDate}</sup>
-                  </p>
-                </div>
+                {curElem.edition==="16" ? <EditionSix curElem={curElem} />:<AboveSix curElem={curElem}/>}
               </div>
             </>
           );
@@ -128,4 +40,226 @@ const PastMatchCard = (props) => {
     </>
   );
 };
+const EditionSix=({curElem})=>{
+  const teamStyle = "flex items-center gap-2 justify-evenly w-2/5 ";
+  const teamName = "font-extrabold text-lg md:text-lg";
+  const shortformstyle = "h-[68px] md:h-[80px] md:w-[80px] rounded-full";
+  const teamNameStyle = "text-center flex flex-col items-center";
+  return( 
+  <>
+  <div className="flex justify-evenly w-full pt-4">
+  {/* team 1 */}
+  <div className={`${teamStyle}`}>
+    <div className={teamNameStyle}>
+      <img
+        alt="team-logo"
+        className={shortformstyle}
+        style={{
+          backgroundColor: teams[curElem.Team1Id]?.themeColor,
+        }}
+        src={teams[curElem.Team1Id]?.teamLogo}
+      />
+      <p className={`${teamName} ml-1 lg:hidden`}>
+        {teams[curElem.Team1Id]?.teamCode}
+      </p>
+      <p className={`${teamName} ml-1 hidden lg:flex`}>
+        {curElem.Team1Id}
+      </p>
+      <p className="text-[12px] text-gray-500">
+        ({teams[curElem.Team1Id]?.teamType})
+      </p>
+    </div>
+    <div>
+      <p className="text-orange-500 font-bold">
+      {curElem.edition==="16"? curElem.Team1Score:totalScore(
+            curElem.Team1Score,
+            curElem.Team1Extra,
+            curElem.Team1Wicket
+          )}
+        
+      </p>
+      <p className="text-orange-500 font-bold">
+        
+      ({
+           curElem.edition==="16"? curElem.Team1Over: getOver(
+            curElem.Team1Score,
+            curElem.Team1prev,
+            curElem.Team1Extra
+          )[0]
+            
+        })
+      </p>
+    </div>
+  </div>
+  <div>
+    {" "}
+    <Image src="/vector-8.png" height={80} width={80} />
+  </div>
+  {/* current score and over */}
+
+  <div className={teamStyle}>
+    <div>
+      <p className="text-orange-500 font-bold">
+        {curElem.edition==="16"? curElem.Team2Score:totalScore(
+            curElem.Team2Score,
+            curElem.Team2Extra,
+            curElem.Team2Wicket
+          )}
+      </p>
+      <p className="text-orange-500 font-bold">
+        
+        ({
+           curElem.edition==="16"? curElem.Team2Over: getOver(
+            curElem.Team2Score,
+            curElem.Team2prev,
+            curElem.Team2Extra
+          )[0]
+            
+        })
+        
+      </p>
+    </div>
+    <div className={teamNameStyle}>
+      {/* {console.log(curElem.Team2Id)} */}
+      <img
+        alt="team-logo"
+        className={shortformstyle}
+        style={{
+          backgroundColor: teams[curElem.Team2Id]?.themeColor,
+        }}
+        src={teams[curElem.Team2Id]?.teamLogo}
+      />
+      <p className={`${teamName} ml-1 lg:hidden`}>
+        {teams[curElem.Team2Id]?.teamCode}
+      </p>
+      <p className={`${teamName} ml-1 hidden lg:flex`}>
+        {curElem.Team2Id}
+      </p>
+      <p className="text-[12px] text-gray-500">
+        ({teams[curElem.Team2Id]?.teamType})
+      </p>
+    </div>
+  </div>
+</div>
+{/* timing and date */}
+<div className="flex flex-col items-center justify-center px-2.5">
+  <p className="text-black-400">{curElem.finalComment}</p>
+  <p className="text-black-400">
+    <sup>{curElem.timeDate}</sup>
+  </p>
+</div>
+</>
+  );
+}
+const AboveSix=({curElem})=>{
+  const teamStyle = "flex items-center gap-2 justify-evenly w-2/5 ";
+  const teamName = "font-extrabold text-lg md:text-lg";
+  const shortformstyle = "h-[68px] md:h-[80px] md:w-[80px] rounded-full";
+  const teamNameStyle = "text-center flex flex-col items-center";
+  return( 
+    <Link href={`/pastscorecard?matchId=${curElem.id}&edition=${curElem.edition}`} className="w-full"  >
+    <div className="flex justify-evenly w-full pt-4">
+    {/* team 1 */}
+    <div className={`${teamStyle}`}>
+      <div className={teamNameStyle}>
+        <img
+          alt="team-logo"
+          className={shortformstyle}
+          style={{
+            backgroundColor: teams[curElem.Team1Id]?.themeColor,
+          }}
+          src={teams[curElem.Team1Id]?.teamLogo}
+        />
+        <p className={`${teamName} ml-1 lg:hidden`}>
+          {teams[curElem.Team1Id]?.teamCode}
+        </p>
+        <p className={`${teamName} ml-1 hidden lg:flex`}>
+          {curElem.Team1Id}
+        </p>
+        <p className="text-[12px] text-gray-500">
+          ({teams[curElem.Team1Id]?.teamType})
+        </p>
+      </div>
+      <div>
+        <p className="text-orange-500 font-bold">
+        {curElem.edition==="16"? curElem.Team1Score:totalScore(
+              curElem.Team1Score,
+              curElem.Team1Extra,
+              curElem.Team1Wicket
+            )}
+          
+        </p>
+        <p className="text-orange-500 font-bold">
+          
+        ({
+             curElem.edition==="16"? curElem.Team1Over: getOver(
+              curElem.Team1Score,
+              curElem.Team1prev,
+              curElem.Team1Extra
+            )[0]
+              
+          })
+        </p>
+      </div>
+    </div>
+    <div>
+      {" "}
+      <Image src="/vector-8.png" height={80} width={80} />
+    </div>
+    {/* current score and over */}
+  
+    <div className={teamStyle}>
+      <div>
+        <p className="text-orange-500 font-bold">
+          {curElem.edition==="16"? curElem.Team2Score:totalScore(
+              curElem.Team2Score,
+              curElem.Team2Extra,
+              curElem.Team2Wicket
+            )}
+        </p>
+        <p className="text-orange-500 font-bold">
+          
+          ({
+             curElem.edition==="16"? curElem.Team2Over: getOver(
+              curElem.Team2Score,
+              curElem.Team2prev,
+              curElem.Team2Extra
+            )[0]
+              
+          })
+          
+        </p>
+      </div>
+      <div className={teamNameStyle}>
+        {/* {console.log(curElem.Team2Id)} */}
+        <img
+          alt="team-logo"
+          className={shortformstyle}
+          style={{
+            backgroundColor: teams[curElem.Team2Id]?.themeColor,
+          }}
+          src={teams[curElem.Team2Id]?.teamLogo}
+        />
+        <p className={`${teamName} ml-1 lg:hidden`}>
+          {teams[curElem.Team2Id]?.teamCode}
+        </p>
+        <p className={`${teamName} ml-1 hidden lg:flex`}>
+          {curElem.Team2Id}
+        </p>
+        <p className="text-[12px] text-gray-500">
+          ({teams[curElem.Team2Id]?.teamType})
+        </p>
+      </div>
+    </div>
+  </div>
+  {/* timing and date */}
+  <div className="flex flex-col items-center justify-center px-2.5">
+    <p className="text-black-400">{curElem.finalComment}</p>
+    <p className="text-black-400">
+      <sup>{curElem.timeDate}</sup>
+    </p>
+  </div>
+  </Link>
+    );
+}
 export default PastMatchCard;

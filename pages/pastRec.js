@@ -1,7 +1,14 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { db, dbRef, storage } from "../components/db/Firebase";
-import { collection, getDocs, query, orderBy, doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { listAll, ref, getDownloadURL } from "firebase/storage";
 import Link from "next/link";
 import Head from "next/head";
@@ -14,6 +21,8 @@ import PastMatchCard from "../components/PrevYearPastMatchCard";
 // import ParticipatingTeams from "../components/PrevSquads";
 import PrevEdMatch from "../components/PrevEdiMatches";
 import DeveloperComponent from "../components/Developers";
+import Winners from "../components/Winners";
+import teams from "../components/teams";
 export async function getServerSideProps() {
   let data = [];
 
@@ -23,72 +32,49 @@ export async function getServerSideProps() {
     temp.id = doc.id;
     data.push(temp);
   });
-  
-   querySnapshot = await getDocs(collection(db, "pastYearMatches"));
+
+  querySnapshot = await getDocs(collection(db, "pastYearMatches"));
   let list = [];
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    // console.log(doc.id, " => ", doc.data());
-    if(doc.data().edition ==="16")
-    list.push(doc.data());
+    if (doc.data().edition === "16") list.push(doc.data());
   });
-  
+
   list.sort((a, b) => b.MatchNo - a.MatchNo);
-  // list.sort((a, b) => b?.id - a?.id);
-  // let count=0;
-  // for(let i of list)
-  // {
-  //    if(i?.id !==undefined)
-  //    {
-  //      console.log(i.id);
 
-  //      const matchDocRef = doc(db, "pastYearMatches",i.docId);
+  let organizers = [];
 
-  //      // Update the document by adding the 'edition' field
-  //      await updateDoc(matchDocRef, {
-  //        edition: "17" // Assign your desired edition value here
-  //      });
-  //      console.log(`Added 'edition' field to Match ID: ${i.id}`);
-  //    }
-  //   //  console.log(count);
-  // }
-  // console.log(list);
-  // console.log(list);
-
-  let organizers=[];
-   
-   querySnapshot = await getDocs(
+  querySnapshot = await getDocs(
     query(collection(db, "team"), orderBy("name", "desc"))
   );
   let coordinators = [];
   let developers = [];
   let designers = [];
   let content_creators = [];
-  let in_house = [];
+  let in_houses = [];
 
   querySnapshot.forEach((doc) => {
     let data = doc.data();
-    if (data.position == "coordinator" ) {
+    if (data.position == "coordinator") {
       coordinators.push(data);
-    } else if (data.position == "developer" ) {
+    } else if (data.position == "developer") {
       developers.push(data);
-    } else if (data.position == "designer" ) {
+    } else if (data.position == "designer") {
       designers.push(data);
-    } else if (data.position == "content writer"  ) {
+    } else if (data.position == "content writer") {
       content_creators.push(data);
-    } else if (data.position == "Infra and In-House"  ){
-      in_house.push(data);
+    } else if (data.position == "Infra and In-House") {
+      in_houses.push(data);
     }
   });
   return {
     props: {
       teamList: data,
-      matchData:list,
+      matchData: list,
       coordinators,
       developers,
       designers,
       content_creators,
-      in_house
+      in_houses,
     },
   };
 }
@@ -104,29 +90,116 @@ function decideWinner(maleWinnerTeamCode, FemaleWinnerTeamCode, teamList) {
   return dataToBeReturned;
 }
 
-
-
-const PastRec=({teamList, matchData,coordinators,
+const PastRec = ({
+  teamList,
+  matchData,
+  coordinators,
   developers,
   designers,
   content_creators,
-  in_house})=>{
-
-  
-  const [winnerTeamList, setWinnerTeamList] = useState([]);
-  useEffect(() => {
-    
-    setWinnerTeamList(() => decideWinner("SHM", "SAM", teamList));
-  }, []);
-
+  in_houses,
+}) => {
+  const [coordinator, setCoordinator] = useState(coordinators);
+  const [matches, setMatches] = useState(matchData);
+  const [developer, setDeveloper] = useState(developers);
+  const [designer, setDesigner] = useState(designers);
+  const [content_creator, setContentCreator] = useState(content_creators);
+  const[in_house, setInHouse] = useState(in_houses);
   const [selectedChoice, setSelectedChoice] = useState("squads");
   const [edition, setEdition] = useState("16");
+  const [winnerTeamList, setWinnerTeamList] = useState(()=>{
+    return decideWinner(Winners[edition].men, Winners[edition].women,teamList);  });
   const [selectedGender, setSelectedGender] = useState("male");
+  useEffect(() => {
+    setWinnerTeamList(() => decideWinner(Winners[edition].men, Winners[edition].women, teamList));
+  }, [edition]);
+  useEffect(() => {
+    // Check if window is defined to ensure code runs in the browser
+    if (typeof window !== 'undefined') {
+      const storedEdition = localStorage.getItem('edition');
+      if (storedEdition) {
+        setEdition(storedEdition);
+      }
+    }
+  }, []); // Empty dependency array ensures this runs once after mount
+
+  // Update localStorage whenever edition changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('edition', edition);
+    }
+  }, [edition]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch Participating Teams
+        let data = [];
+    
+        // Fetch Past Year Matches for the specified edition
+       let querySnapshot = await getDocs(collection(db, "pastYearMatches"));
+        let list = [];
+        querySnapshot.forEach((doc) => {
+          if (doc.data().edition === edition) list.push(doc.data());
+        });
+
+        list.sort((a, b) => b.MatchNo - a.MatchNo);
+        setMatches(list);
+        //  console.log(matches);
+        // Fetch Teams and Categorize Them
+        const teamsQuery = query(
+          collection(db, "team"),
+          orderBy("name", "desc")
+        );
+        const teamSnapshot = await getDocs(teamsQuery);
+        const coordinatorsTemp = [];
+        const developersTemp = [];
+        const designersTemp = [];
+        const contentCreatorsTemp = [];
+        const inHouseTemp = [];
+
+        teamSnapshot.forEach((doc) => {
+          const data = doc.data();
+          if(data.edition === edition){
+          switch (data.position) {
+            case "coordinator":
+              coordinatorsTemp.push(data);
+              break;
+            case "developer":
+              developersTemp.push(data);
+              break;
+            case "designer":
+              designersTemp.push(data);
+              break;
+            case "content writer":
+              contentCreatorsTemp.push(data);
+              break;
+            case "Infra and In-House":
+              inHouseTemp.push(data);
+              break;
+            default:
+              // Handle unexpected positions if necessary
+              break;
+          }
+        }
+        });
+        setCoordinator(coordinatorsTemp);
+        setDeveloper(developersTemp);
+        setDesigner(designersTemp);
+        setContentCreator(contentCreatorsTemp);
+        setInHouse(inHouseTemp)
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+
+    fetchData();
+  }, [edition]);
+
   const StylesBasedonChoice = (choice) => {
     if (selectedChoice === choice) {
       if (selectedGender === "male") {
         return "bg-[#508CD4] font-[700] text-[20px] md:text-[39px] md:w-auto md:h-[71px] leading-[24.38px] text-white h-[70px] w-[103px] px-2 shadow-lg";
-      } else  {
+      } else {
         return "bg-[#CE3AB3] font-[700] text-[20px] md:text-[39px] md:w-auto md:h-[71px] leading-[24.38px] text-white h-[70px] w-[124px] px-2 shadow-lg";
       }
     } else {
@@ -144,16 +217,15 @@ const PastRec=({teamList, matchData,coordinators,
     return finalDecision;
   }
   const ParticipatingTeams = ({ teamList, edition }) => {
-    
     const [page, setPage] = useState(1);
     const [range, setRange] = useState({ start: 0, end: 5 });
     const [totalPages, setTotalPages] = useState(0);
     const [maleTeams, setMaleTeams] = useState([]);
     const [femaleTeams, setFemaleTeams] = useState([]);
-    
+
     const maleColor = "#508CD4";
     const femaleColor = "#CE3AB3";
-  
+
     const StylesBasedonGender = (gender) => {
       if (selectedGender === gender) {
         if (gender === "male") {
@@ -165,7 +237,7 @@ const PastRec=({teamList, matchData,coordinators,
         return "";
       }
     };
-  
+
     function divisionOfTeamsbasedonGender() {
       let localMaleTeams = [];
       let localFemaleTeams = [];
@@ -179,23 +251,23 @@ const PastRec=({teamList, matchData,coordinators,
       setMaleTeams(localMaleTeams);
       setFemaleTeams(localFemaleTeams);
     }
-  
+
     useEffect(() => {
       setRange({ start: 5 * (page - 1), end: 5 * page });
     }, [page]);
-  
+
     useEffect(() => {
       divisionOfTeamsbasedonGender();
     }, [teamList]);
-  
+
     useEffect(() => {
       let maleCount = maleTeams.length;
-  
+
       let pages = Math.ceil(maleCount / 5);
-  
+
       setTotalPages(pages);
     }, [maleTeams]);
-  
+
     function colorDeciderForRange(buttonType) {
       if (buttonType === "previous") {
         if (page === 1) {
@@ -211,7 +283,7 @@ const PastRec=({teamList, matchData,coordinators,
         }
       }
     }
-  
+
     function decisionsBasedonGender() {
       let finalDecision = "";
       if (selectedGender === "male") {
@@ -219,239 +291,276 @@ const PastRec=({teamList, matchData,coordinators,
       } else {
         finalDecision = "from-[#AA277E]";
       }
-  
+
       return finalDecision;
     }
-  
+
     return (
       <>
-      <Head>
-        <title>Past Records</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className={``} >
-      {/* bg-gradient-to-b ${decisionsBasedonGender()} to-white */}
-      <p className="font-[800] text-[28px] leading-[34.13px] text-[#FFFDFA] text-center  pt-10 mb-3">
-         
-            
-          </p>
-         
-        <div className="md:hidden">
-          
-          <div className="bg-white text-gray-500 flex justify-evenly w-[223px] mx-auto text-center font-[600] text-[16px] rounded-lg mb-6">
-            <div
-              onClick={() => {
-                setSelectedGender("male");
-              }}
-              className={`cursor-pointer h-[44px] flex justify-center items-center`}
-            >
-              <p
-                className={`${StylesBasedonGender(
-                  "male"
-                )} flex items-center  justify-center rounded-lg`}
+        <Head>
+          <title>Past Records</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div className={``}>
+          {/* bg-gradient-to-b ${decisionsBasedonGender()} to-white */}
+          <p className="font-[800] text-[28px] leading-[34.13px] text-[#FFFDFA] text-center  pt-10 mb-3"></p>
+
+          <div className="md:hidden">
+            <div className="bg-white text-gray-500 flex justify-evenly w-[223px] mx-auto text-center font-[600] text-[16px] rounded-lg mb-6">
+              <div
+                onClick={() => {
+                  setSelectedGender("male");
+                }}
+                className={`cursor-pointer h-[44px] flex justify-center items-center`}
               >
-                Men's
-              </p>
-            </div>
-            <div
-              onClick={() => {
-                setSelectedGender("female");
-              }}
-              className={`cursor-pointer h-[44px] flex justify-center items-center`}
-            >
-              <p
-                className={`${StylesBasedonGender(
-                  "female"
-                )} flex items-center  justify-center rounded-lg`}
+                <p
+                  className={`${StylesBasedonGender(
+                    "male"
+                  )} flex items-center  justify-center rounded-lg`}
+                >
+                  Men's
+                </p>
+              </div>
+              <div
+                onClick={() => {
+                  setSelectedGender("female");
+                }}
+                className={`cursor-pointer h-[44px] flex justify-center items-center`}
               >
-                Women's
-              </p>
+                <p
+                  className={`${StylesBasedonGender(
+                    "female"
+                  )} flex items-center  justify-center rounded-lg`}
+                >
+                  Women's
+                </p>
+              </div>
             </div>
-          </div>
-          <p className="text-center text-[16px] text-white mb-4">
-            Tap on the Teams to know more.
-          </p>
-          <div className="relative h-[740px] overflow-x-hidden mx-auto">
-            {selectedGender === "male" ? (
-              <div className="grid grid-cols-2 gap-2 mx-auto w-screen px-2">
-                {maleTeams.map((team, index) => {
-                  if (index >= range.start && index < range.end) {
+            <p className="text-center text-[16px] text-white mb-4">
+              Tap on the Teams to know more.
+            </p>
+            <div className="relative h-[740px] overflow-x-hidden mx-auto">
+              {selectedGender === "male" ? (
+                <div className="grid grid-cols-2 gap-2 mx-auto w-screen px-2">
+                  {maleTeams.map((team, index) => {
+                    if (index >= range.start && index < range.end) {
+                      return (
+                        <div
+                          key={index}
+                          className="cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            location.assign(
+                              "/pastEdition/" + team.id + "/" + edition
+                            );
+                          }}
+                        >
+                          {" "}
+                          <PrevYearMatchCard
+                            type={`short`}
+                            team={team}
+                            key={index}
+                            genderColor={maleColor}
+                            edition={edition}
+                          />{" "}
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-2 mx-auto w-screen px-2">
+                  {femaleTeams.map((team, index) => {
                     return (
                       <div
-                        key={index}
                         className="cursor-pointer"
+                        key={team.id}
                         onClick={(e) => {
                           e.preventDefault();
-                          location.assign("/pastEdition/" + team.id+ "/" + edition);
+                          location.assign(
+                            "/pastEdition/" + team.id + "/" + edition
+                          );
                         }}
                       >
-                        {" "}
                         <PrevYearMatchCard
                           type={`short`}
                           team={team}
                           key={index}
-                          genderColor={maleColor}
+                          genderColor={femaleColor}
                           edition={edition}
-                        />{" "}
+                        />
                       </div>
                     );
-                  }
-                })}
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 mx-auto w-screen px-2">
-                {femaleTeams.map((team, index) => {
-                  return (
-                    <div
-                      className="cursor-pointer"
-                      key={team.id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        location.assign("/pastEdition/" + team.id+ "/" + edition);
-                      }}
-                    >
-                      <PrevYearMatchCard
-                        type={`short`}
-                        team={team}
-                        key={index}
-                        genderColor={femaleColor}
-                        edition={edition}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-            {selectedGender === "male" && (
-              <div className="flex ml-[20px] items-center font-bold my-5">
-                <BsChevronLeft
-                  onClick={() => {
-                    if (page > 1) {
-                      setPage(page - 1);
+                  })}
+                </div>
+              )}
+              {selectedGender === "male" && (
+                <div className="flex ml-[20px] items-center font-bold my-5">
+                  <BsChevronLeft
+                    onClick={() => {
+                      if (page > 1) {
+                        setPage(page - 1);
+                        // console.log(page);
+                      }
+                    }}
+                    className={`${colorDeciderForRange("previous")}`}
+                  />
+                  <BsChevronRight
+                    onClick={() => {
+                      if (page < totalPages) setPage(page + 1);
                       // console.log(page);
-                    }
-                  }}
-                  className={`${colorDeciderForRange("previous")}`}
+                    }}
+                    className={`${colorDeciderForRange("next")} z-10`}
+                  />
+                </div>
+              )}
+              {selectedGender === "male" ? (
+                <Image
+                  src={`/vector-4.png`}
+                  alt="Picture of a batsman"
+                  height={400}
+                  width={300}
+                  className="absolute bottom-0 h-[382px] w-[382px] left-[52px]"
                 />
-                <BsChevronRight
-                  onClick={() => {
-                    if (page < totalPages) setPage(page + 1);
-                    // console.log(page);
-                  }}
-                  className={`${colorDeciderForRange("next")} z-10`}
+              ) : (
+                <Image
+                  src={`/vector-7.png`}
+                  alt="Picture of a batsman"
+                  height={400}
+                  width={300}
+                  className="absolute bottom-0 h-[291px] w-[291px] left-[82px]"
                 />
-              </div>
-            )}
-            {selectedGender === "male" ? (
-              <Image
-                src={`/vector-4.png`}
-                alt="Picture of a batsman"
-                height={400}
-                width={300}
-                className="absolute bottom-0 h-[382px] w-[382px] left-[52px]"
-              />
-            ) : (
-              <Image
-                src={`/vector-7.png`}
-                alt="Picture of a batsman"
-                height={400}
-                width={300}
-                className="absolute bottom-0 h-[291px] w-[291px] left-[82px]"
-              />
-            )}
+              )}
+            </div>
           </div>
-        </div>
-  
-        {/* .
+
+          {/* .
       .
       .
       .
       .
       .
       . */}
-  
-        {/* follwowing component will be shown only when screen size is 725px or higher */}
-        <div className="hidden md:flex">
-          <div className="w-2/5 flex justify-start items-center mt-20 ml-0">
-            {selectedGender === "male" ? (
-              <Image
-                src={`/vector-4.png`}
-                alt="Picture of a batsman"
-                height={400}
-                width={300}
-                className=" h-[591px] w-[591px]"
-              />
-            ) : (
-              <Image
-                src={`/vector-7.png`}
-                alt="Picture of a batsman"
-                height={400}
-                width={300}
-                className="h-[491px] w-[491px]"
-              />
-            )}
-          </div>
-          <div>
-            <div className="flex justify-center items-center  my-10 w-[762px] ">
-              {/* buttons to switch between men and women team */}
-              <div className="flex items-center justify-between mr-10 bg-white text-gray-500 px-4 py-2 gap-2 text-center rounded-lg font-[600] text-[30px]">
-                {/* men's button */}
-                <div
-                  onClick={() => {
-                    setSelectedGender("male");
-                  }}
-                  className={` h-[44px] flex justify-center items-center cursor-pointer`}
-                >
-                  <p
-                    className={`${StylesBasedonGender(
-                      "male"
-                    )} flex items-center rounded-lg`}
+
+          {/* follwowing component will be shown only when screen size is 725px or higher */}
+          <div className="hidden md:flex">
+            <div className="w-2/5 flex justify-start items-center mt-20 ml-0">
+              {selectedGender === "male" ? (
+                <Image
+                  src={`/vector-4.png`}
+                  alt="Picture of a batsman"
+                  height={400}
+                  width={300}
+                  className=" h-[591px] w-[591px]"
+                />
+              ) : (
+                <Image
+                  src={`/vector-7.png`}
+                  alt="Picture of a batsman"
+                  height={400}
+                  width={300}
+                  className="h-[491px] w-[491px]"
+                />
+              )}
+            </div>
+            <div>
+              <div className="flex justify-center items-center  my-10 w-[762px] ">
+                {/* buttons to switch between men and women team */}
+                <div className="flex items-center justify-between mr-10 bg-white text-gray-500 px-4 py-2 gap-2 text-center rounded-lg font-[600] text-[30px]">
+                  {/* men's button */}
+                  <div
+                    onClick={() => {
+                      setSelectedGender("male");
+                    }}
+                    className={` h-[44px] flex justify-center items-center cursor-pointer`}
                   >
-                    Men's
-                  </p>
-                </div>
-  
-                {/* women's button */}
-                <div
-                  onClick={() => {
-                    setSelectedGender("female");
-                  }}
-                  className={` h-[44px] flex justify-center items-center cursor-pointer`}
-                >
-                  <p
-                    className={`${StylesBasedonGender(
-                      "female"
-                    )} flex items-center rounded-lg`}
+                    <p
+                      className={`${StylesBasedonGender(
+                        "male"
+                      )} flex items-center rounded-lg`}
+                    >
+                      Men's
+                    </p>
+                  </div>
+
+                  {/* women's button */}
+                  <div
+                    onClick={() => {
+                      setSelectedGender("female");
+                    }}
+                    className={` h-[44px] flex justify-center items-center cursor-pointer`}
                   >
-                    Women's
-                  </p>
+                    <p
+                      className={`${StylesBasedonGender(
+                        "female"
+                      )} flex items-center rounded-lg`}
+                    >
+                      Women's
+                    </p>
+                  </div>
                 </div>
-              </div>
-              {/* <p className=" text-white text-[38px] leading-[58.51px] my-10 font-bold">
+                {/* <p className=" text-white text-[38px] leading-[58.51px] my-10 font-bold">
                 Participating Teams
                 
               </p> */}
-              
-            </div>
-  
-            {selectedGender === "male" ? (
-              <div className="grid gap-3 mr-4 grid-cols-2 ">
-                {maleTeams.map((team, index) => {
-                  if (index >= range.start && index < range.end) {
+              </div>
+
+              {selectedGender === "male" ? (
+                <div className="grid gap-3 mr-4 grid-cols-2 ">
+                  {maleTeams.map((team, index) => {
+                    if (index >= range.start && index < range.end) {
+                      return (
+                        <>
+                          <div
+                            className="lg:hidden"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              location.assign(
+                                "/pastEdition/" + team.id + "/" + edition
+                              );
+                            }}
+                          >
+                            <PrevYearMatchCard
+                              type={`short`}
+                              team={team}
+                              key={index}
+                              genderColor={maleColor}
+                              edition={edition}
+                            />
+                          </div>
+                          <div className="hidden lg:flex">
+                            <PrevYearMatchCard
+                              type={`short`}
+                              team={team}
+                              key={index}
+                              genderColor={maleColor}
+                              edition={edition}
+                            />
+                          </div>
+                        </>
+                      );
+                    }
+                  })}
+                </div>
+              ) : (
+                <div className="grid gap-3 mr-4 grid-cols-2 ">
+                  {femaleTeams.map((team, index) => {
                     return (
                       <>
                         <div
                           className="lg:hidden"
                           onClick={(e) => {
                             e.preventDefault();
-                            location.assign("/pastEdition/" + team.id+ "/" + edition);
+                            location.assign(
+                              "/pastEdition/" + team.id + "/" + edition
+                            );
                           }}
                         >
                           <PrevYearMatchCard
                             type={`short`}
                             team={team}
                             key={index}
-                            genderColor={maleColor}
+                            genderColor={femaleColor}
                             edition={edition}
                           />
                         </div>
@@ -460,83 +569,47 @@ const PastRec=({teamList, matchData,coordinators,
                             type={`short`}
                             team={team}
                             key={index}
-                            genderColor={maleColor}
+                            genderColor={femaleColor}
                             edition={edition}
                           />
                         </div>
                       </>
                     );
-                  }
-                })}
-              </div>
-            ) : (
-              <div className="grid gap-3 mr-4 grid-cols-2 ">
-                {femaleTeams.map((team, index) => {
-                  return (
-                    <>
-                      <div
-                        className="lg:hidden"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          location.assign("/pastEdition/" + team.id+ "/" + edition);
-                        }}
-                      >
-                        <PrevYearMatchCard
-                          type={`short`}
-                          team={team}
-                          key={index}
-                          genderColor={femaleColor}
-                          edition={edition}
-                        />
-                      </div>
-                      <div className="hidden lg:flex">
-                        <PrevYearMatchCard
-                          type={`short`}
-                          team={team}
-                          key={index}
-                          genderColor={femaleColor}
-                          edition={edition}
-                        />
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
-            )}
-  
-            {selectedGender === "male" && (
-              <div className="flex ml-[20px] text-4xl items-center font-bold my-5">
-                <BsChevronLeft
-                  onClick={() => {
-                    if (page > 1) {
-                      setPage(page - 1);
-                    }
-                  }}
-                  className={`${colorDeciderForRange("previous")}`}
-                />
-                <BsChevronRight
-                  onClick={() => {
-                    if (page < totalPages) setPage(page + 1);
-                  }}
-                  className={`${colorDeciderForRange("next")} z-10`}
-                />
-              </div>
-            )}
+                  })}
+                </div>
+              )}
+
+              {selectedGender === "male" && (
+                <div className="flex ml-[20px] text-4xl items-center font-bold my-5">
+                  <BsChevronLeft
+                    onClick={() => {
+                      if (page > 1) {
+                        setPage(page - 1);
+                      }
+                    }}
+                    className={`${colorDeciderForRange("previous")}`}
+                  />
+                  <BsChevronRight
+                    onClick={() => {
+                      if (page < totalPages) setPage(page + 1);
+                    }}
+                    className={`${colorDeciderForRange("next")} z-10`}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
       </>
     );
-  }
-  function PrevEdMatch ({matchData})  {
+  };
+  function PrevEdMatch({ matches }) {
     //console.log(matchData);
-  
+    // console.log("matches");
+    // console.log(matches);
     // const [selectedGender, setSelectedGender] = useState("male");
     const [selectedTime, setSelectedTime] = useState("present");
-    
-   
-    
-  
+
     const StylesBasedonGender = (gender) => {
       if (selectedGender === gender) {
         if (gender === "male") {
@@ -548,7 +621,7 @@ const PastRec=({teamList, matchData,coordinators,
         return "";
       }
     };
-  
+
     const StylesBasedonTime = (gender, time) => {
       if (selectedGender === gender && selectedTime === time) {
         if (gender === "male") {
@@ -567,15 +640,15 @@ const PastRec=({teamList, matchData,coordinators,
       } else {
         finalDecision = "from-[#AA277E]";
       }
-  
+
       return finalDecision;
     }
-    
+
     // console.log(matchData)
     return (
       <>
-        <div className={``} >
-        {/* bg-gradient-to-b ${decisionsBasedonGender()} to-white */}
+        <div className={``}>
+          {/* bg-gradient-to-b ${decisionsBasedonGender()} to-white */}
           <div className="md:hidden flex flex-col">
             <div className="flex flex-1 flex-col items-center">
               <div className="flex justify-center items-center mt-10">
@@ -596,7 +669,7 @@ const PastRec=({teamList, matchData,coordinators,
                       Men's
                     </p>
                   </div>
-  
+
                   {/* women's button */}
                   <div
                     onClick={() => {
@@ -614,12 +687,12 @@ const PastRec=({teamList, matchData,coordinators,
                   </div>
                 </div>
               </div>
-              
+
               <div className="float-none flex flex-1 flex-col items-center w-full mt-8">
                 <div className=" gap-3 flex flex-col w-full items-center">
-                  
-                   {matchData.length!==0 && <PastMatchCard matchData={[matchData, selectedGender]} />}
-                 
+                  {matchData.length !== 0 && (
+                    <PastMatchCard matchData={[matches, selectedGender]} />
+                  )}
                 </div>
               </div>
             </div>
@@ -643,7 +716,7 @@ const PastRec=({teamList, matchData,coordinators,
               )}
             </div>
           </div>
-  
+
           {/* .
       .
       .
@@ -651,7 +724,7 @@ const PastRec=({teamList, matchData,coordinators,
       .
       .
       . */}
-  
+
           {/* follwowing component will be shown only when screen size is 725px or higher */}
           <div className="hidden md:flex">
             <div className="w-2/5 flex justify-start items-start mt-20 ml-0">
@@ -692,7 +765,7 @@ const PastRec=({teamList, matchData,coordinators,
                       Men's
                     </p>
                   </div>
-  
+
                   {/* women's button */}
                   <div
                     onClick={() => {
@@ -710,12 +783,12 @@ const PastRec=({teamList, matchData,coordinators,
                   </div>
                 </div>
               </div>
-             
+
               <div className="float-none flex flex-1 flex-col items-center w-full mt-20">
                 <div className=" gap-3 mr-4 flex flex-col w-full items-center">
-                  
-                {matchData.length!==0 && <PastMatchCard matchData={[matchData, selectedGender]} />}
-                  
+                  {matchData.length !== 0 && (
+                    <PastMatchCard matchData={[matches, selectedGender]} />
+                  )}
                 </div>
               </div>
             </div>
@@ -723,103 +796,130 @@ const PastRec=({teamList, matchData,coordinators,
         </div>
       </>
     );
-  };
-  
+  }
 
-return (
-  <>
-  <Navbar/>
-  <div className={`bg-gradient-to-b ${bgDecider()} to-white border-b-2 pb-5` } >
-  {/*  */}
-    
-  <p className=" text-white text-[38px] leading-[58.51px] text-center  font-bold py-10 ">
-               <span > Select Edition
-                <select value={edition} onChange={(e)=>setEdition(e.target.value)} className=" cursor-pointer ml-2 font-semibold   text-[#414447]  border-2 rounded-lg text-[26px]" > 
-                   
-                    <option value={"16"} className="rounded-lg hover:cursor-pointer  font-semibold text-[20px] ">16</option>
-                    <option value={"17"}className="rounded-lg hover:cursor-pointer font-semibold text-[20px] ">17</option>
-              </select>
-              </span>
-              </p>
+  return (
+    <>
+      <Navbar />
+      <div
+        className={`bg-gradient-to-b ${bgDecider()} to-white border-b-2 pb-5`}
+      >
+        {/*  */}
 
-  <WinnersAnnouncement teamlist={winnerTeamList} />
-  <div className=" my-5 ">
-       <div className="flex justify-center items-center py-5  ">
-              {/* buttons to switch between men and women team */}
-              <div className="flex items-center mx-auto border-2 bg-white text-gray-500 px-4 py-2 gap-2 text-center rounded-lg font-[600] text-[30px]">
+        <p className=" text-white text-[38px] leading-[58.51px] text-center  font-bold py-10 ">
+          <span>
+            {" "}
+            Select Edition
+            <select
+              value={edition}
+              onChange={(e) => setEdition(e.target.value)}
+              className=" cursor-pointer ml-2 font-semibold   text-[#414447]  border-2 rounded-lg text-[26px]"
+            >
+              <option
+                value={"16"}
+                className="rounded-lg hover:cursor-pointer  font-semibold text-[20px] "
+              >
+                16
+              </option>
+              <option
+                value={"17"}
+                className="rounded-lg hover:cursor-pointer font-semibold text-[20px] "
+              >
+                17
+              </option>
+            </select>
+          </span>
+        </p>
+
+        <WinnersAnnouncement winners={winnerTeamList} />
+        <div className=" my-5 ">
+          <div className="flex justify-center items-center py-5  ">
+            {/* buttons to switch between men and women team */}
+            <div className="flex items-center mx-auto border-2 bg-white text-gray-500 px-4 py-2 gap-2 text-center rounded-lg font-[600] text-[30px]">
               {/* bg-white text-gray-500 flex justify-evenly w-[223px] mx-auto text-center font-[600] text-[16px] rounded-lg mb-6 */}
-                {/* men's button */}
-                <div
-                  onClick={() => {
-                    setSelectedChoice("squads");
-                  }}
-                  className={` h-[40px] flex justify-center items-center cursor-pointer`}
+              {/* men's button */}
+              <div
+                onClick={() => {
+                  setSelectedChoice("squads");
+                }}
+                className={` h-[40px] flex justify-center items-center cursor-pointer`}
+              >
+                <p
+                  className={`${StylesBasedonChoice(
+                    "squads"
+                  )} flex items-center rounded-lg`}
                 >
-                  <p
-                    className={`${StylesBasedonChoice(
-                      "squads"
-                    )} flex items-center rounded-lg`}
-                  >
-                    Squads
-                  </p>
-                </div>
-  
-                {/* women's button */}
-                <div
-                  onClick={() => {
-                    setSelectedChoice("matches");
-                  }}
-                  className={` h-[40px] flex justify-center items-center cursor-pointer`}
-                >
-                  <p
-                    className={`${StylesBasedonChoice(
-                      "matches"
-                    )} flex items-center rounded-lg`}
-                  >
-                    Matches
-                  </p>
-                </div>
+                  Squads
+                </p>
               </div>
-              
+
+              {/* women's button */}
+              <div
+                onClick={() => {
+                  setSelectedChoice("matches");
+                }}
+                className={` h-[40px] flex justify-center items-center cursor-pointer`}
+              >
+                <p
+                  className={`${StylesBasedonChoice(
+                    "matches"
+                  )} flex items-center rounded-lg`}
+                >
+                  Matches
+                </p>
+              </div>
             </div>
-     
-  </div>
-  {selectedChoice=="squads" ? <ParticipatingTeams teamList={teamList}edition={edition} /> :<PrevEdMatch matchData={matchData}/> }
-  </div>
-  <p className=" text-black text-[38px] leading-[58.51px] text-center  font-bold my-10 " >
-    <span className="border-b-4 border-[#F4A68D] pb-2"  >
-    Organizing Team
-    </span>
-    
-    
-    </p>
-  {coordinators.length !== 0 && <DeveloperComponent text=" Co-ordinators" developers={coordinators} />}
-   {designers.length !== 0 && <DeveloperComponent text="Designers" developers={designers}/>}
-   {in_house.length !== 0 && <DeveloperComponent text="Infra-In House" developers={in_house} />}
-   {content_creators.length !== 0 && <DeveloperComponent text="Content Writers" developers={content_creators} />}
-  <Footer/>
-  </>
-)
-}
+          </div>
+        </div>
+        {selectedChoice == "squads" ? (
+          <ParticipatingTeams teamList={teamList} edition={edition} />
+        ) : (
+          <PrevEdMatch matches={matches} />
+        )}
+      </div>
+      <p className=" text-black text-[38px] leading-[58.51px] text-center  font-bold my-10 ">
+        <span className="border-b-4 border-[#F4A68D] pb-2">
+          Organizing Team
+        </span>
+      </p>
+      {coordinator.length !== 0 && (
+        <DeveloperComponent text=" Co-ordinators" developers={coordinator} />
+      )}
+      {designer.length !== 0 && (
+        <DeveloperComponent text="Designers" developers={designer} />
+      )}
+      {in_house.length !== 0 && (
+        <DeveloperComponent text="Infra-In House" developers={in_house} />
+      )}
+      {content_creator.length !== 0 && (
+        <DeveloperComponent
+          text="Content Writers"
+          developers={content_creator}
+        />
+      )}
+      <Footer />
+    </>
+  );
+};
 
 export default PastRec;
-const WinnersAnnouncement = ({ teamlist }) => {
+const WinnersAnnouncement = ({ winners }) => {
   const winnerTabStyle =
     "flex items-center justify-evenly w-full md:w-2/3 md:mx-auto lg:w-1/3 text-center my-2 py-2 rounded-md shadow-md text-2xl ";
-
   const winnerStyle = "font-bold font-3xl";
 
-  // console.log(teamlist);
-
-  if (teamlist.length === 0) {
-    return <div className="mx-auto" >loading...</div>;
+  if (winners.length === 0) {
+    return <div className="mx-auto">loading...</div>;
   } else {
     return (
-      <div className="flex flex-col  w-full lg:flex-row justify-evenly py-10  ">
-        <div className={"bg-[#1e648f] " + winnerTabStyle}>
+      <div className="flex flex-col w-full lg:flex-row justify-evenly py-10">
+        <div
+          style={{ backgroundColor: winners[0].themeColor }}
+          className={`border-2 ${winnerTabStyle}`}
+        >
           <div className="flex-shrink-0 h-14 w-14">
             <Image
-              src={teamlist[0].teamLogo}
+              src={winners[0].teamLogo}
               height={130}
               width={130}
               alt="MMNCT 2023 men's winner team logo"
@@ -827,14 +927,17 @@ const WinnersAnnouncement = ({ teamlist }) => {
           </div>
           <div>
             <p>Mens' Winner</p>
-            <p className={winnerStyle}>{teamlist[0].teamName}</p>
-            <p className="text-sm">{teamlist[0].teamType}</p>
+            <p className={winnerStyle}>{winners[0].teamName}</p>
+            <p className="text-sm font-bold">{winners[0].teamType}</p>
           </div>
         </div>
-        <div className={"bg-[#fae039] " + winnerTabStyle}>
+        <div
+          style={{ backgroundColor: winners[1].themeColor }}
+          className={`border-2 ${winnerTabStyle}`}
+        >
           <div className="flex-shrink-0 h-14 w-14">
             <Image
-              src={teamlist[1].teamLogo}
+              src={winners[1].teamLogo}
               height={130}
               width={130}
               alt="MMNCT 2023 women's winner team logo"
@@ -842,15 +945,12 @@ const WinnersAnnouncement = ({ teamlist }) => {
           </div>
           <div>
             <p>Womens' Winner</p>
-            <p className={winnerStyle}>{teamlist[1].teamName}</p>
-            <p className="text-sm">{teamlist[1].teamType}</p>
+            <p className={winnerStyle}>{winners[1].teamName}</p>
+            <p className="text-sm font-bold">{winners[1].teamType}</p>
           </div>
         </div>
       </div>
     );
   }
 };
-
-
-
 
