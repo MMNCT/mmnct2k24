@@ -40,22 +40,22 @@ export async function getServerSideProps(context) {
   let members = [];
   let captain = {};
   let viceCaptain = {};
-
+  const currEdition = "18";
   // Get the document from the collection participating-teams having the id as team_id
   await getDoc(doc(db, "participating-teams", teamId)).then(async (docSnap) => {
     if (docSnap.exists()) {
       let data = docSnap.data();
       data.id = teamId;
       teamDetails = data;
-
+      //  console.log(teamDetails);
       // Get all the documents from the collection participating-team-member having the teamId as data.id
-      let member_col = collection(db, "participating-team-member");
-      let q = query(member_col, where("teamId", "==", teamId), where("edition", "==", "17"));
+      let member_col = collection(db, "teamMembers");
+      let q = query(member_col, where(`teamId.${currEdition}`, "==", teamId));
       await getDocs(q).then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           let temp = doc.data();
           temp.id = doc.id;
-          temp.teamId = teamId;
+          // temp.teamId = teamId;
           members.push(temp);
           if (temp.id == teamDetails.captainId) {
             captain = temp;
@@ -118,6 +118,48 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     });
   }, [session]);
 
+  // const addNewMember = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   const file = e.target[0].files[0];
+  //   const playerName = e.target[1].value;
+  //   const playerType = e.target[2].value;
+  //   const playerBranch = e.target[3].value;
+  //   const roll_no = e.target[4].value;
+  //   const edition = e.target[5].value;
+  //   const role = e.target[6].value;
+  //   let downloadURL = "";
+  //   if (file != null) {
+  //     const storageRef = ref(storage, `players/${file.name}`);
+  //     const metadata = {
+  //       contentType: "image/jpeg",
+  //     };
+  //     await uploadBytes(storageRef, file, metadata).then(
+  //       async (snapshot) => {
+  //         console.log("Uploaded the image!");
+  //         downloadURL = await getDownloadURL(storageRef);
+  //       },
+  //       (error) => {
+  //         console.log(error);
+  //       }
+  //     );
+  //   }
+  //   await addDoc(collection(db, "participating-team-member"), {
+  //     teamId: teamDetails.id,
+  //     name: playerName,
+  //     type: playerType,
+  //     imgUrl: downloadURL,
+  //     branch: playerBranch,
+  //     roll_no: roll_no,
+  //     edition: edition,
+  //     role: role
+  //   });
+
+  //   alert("Player added successfully");
+  //   location.reload();
+  // };
+  //changes req
   const addNewMember = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -130,6 +172,7 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     const edition = e.target[5].value;
     const role = e.target[6].value;
     let downloadURL = "";
+
     if (file != null) {
       const storageRef = ref(storage, `players/${file.name}`);
       const metadata = {
@@ -145,18 +188,47 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
         }
       );
     }
-    await addDoc(collection(db, "participating-team-member"), {
-      teamId: teamDetails.id,
-      name: playerName,
-      type: playerType,
-      imgUrl: downloadURL,
-      branch: playerBranch,
-      roll_no: roll_no,
-      edition: edition,
-      role: role
-    });
 
-    alert("Player added successfully");
+    // Check if a player with the given roll_no already exists
+    const querySnapshot = await getDocs(
+      query(collection(db, "teamMembers"), where("roll_no", "==", roll_no.toLowerCase()))
+    );
+
+    if (!querySnapshot.empty) {
+      // Player with the given roll_no exists, update their teamId
+      querySnapshot.forEach(async (doc) => {
+        const existingData = doc.data();
+        const updatedTeamId = {
+          ...existingData.teamId,
+          [edition]: teamDetails.id, // Add or update the teamId for the specific edition
+        };
+          // console.log(existingData.id);
+        await updateDoc(doc.ref, {
+          teamId: updatedTeamId,
+          imgUrl: downloadURL,
+          type: playerType,
+        });
+        // console.log(doc.data());
+      });
+      alert("Player's team ID updated successfully");
+    } else {
+      // Player with the given roll_no does not exist, add new player
+      await addDoc(collection(db, "teamMembers"), {
+        teamId: {
+          [edition]: teamDetails.id, // Set initial teamId with the current edition
+        },
+        name: playerName,
+        type: playerType,
+        imgUrl: downloadURL,
+        branch: playerBranch,
+        roll_no: roll_no.toLowerCase(),
+        edition: edition,
+        role: role,
+      });
+      console.log("New Player Added");
+      alert("Player added successfully");
+    }
+
     location.reload();
   };
 
@@ -168,49 +240,70 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     if (!confirm) return;
 
     setLoading(true);
-    const imgUrl = details.imgUrl;
+    // const imgUrl = details.imgUrl;
 
     //Delete the team from the database
-    await deleteDoc(doc(db, "participating-team-member", details.id)).then(
-      () => {
+    // await deleteDoc(doc(db, "teamMembers", details.id)).then(
+    //   () => {
+    //     console.log("Player deleted successfully");
+    //   }
+    // );
+    const playerDocRef = doc(db, 'teamMembers', details.id);
+
+    // Get the current document data
+    const playerDoc = await getDoc(playerDocRef);
+    const currTeamId = playerDoc.data().teamId;
+    console.log(currTeamId);
+    if (currTeamId && Object.keys(currTeamId).length > 1) {
+      // Remove the current edition from the TeamId object
+      delete currTeamId["18"];
+
+      // Update the document with the modified TeamId
+      await updateDoc(playerDocRef, { teamId: currTeamId });
+      // console.log(
+        // `Edition 18 removed from player ${details.id}`
+      // );
+    } else {
+      // If only one edition exists, delete the document
+      await deleteDoc(doc(db, "teamMembers", details.id)).then(() => {
         console.log("Player deleted successfully");
-      }
-    );
+      });
+      // console.log(`Player ${details.id} deleted successfully`);
+    }
 
-    if (imgUrl != "") {
-      let jsonFile = imgUrl.split("?alt=media")[0];
+    // if (imgUrl != "") {
+    //   let jsonFile = imgUrl.split("?alt=media")[0];
 
-      // Fetch JSON file
-      let response = await fetch(jsonFile);
-      let data = await response.json();
+    //   // Fetch JSON file
+    //   let response = await fetch(jsonFile);
+    //   let data = await response.json();
 
-      // Get file name
-      let filePath = data.name;
+    //   // Get file name
+    //   let filePath = data.name;
 
-      // Create a reference to the file to delete
-      let desertRef = ref(storage, filePath);
+    //   // Create a reference to the file to delete
+    //   let desertRef = ref(storage, filePath);
 
-      // Delete the file
-      await deleteObject(desertRef)
-        .then(() => {
-          console.log("File deleted successfully");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    //   // Delete the file
+    //   await deleteObject(desertRef)
+    //     .then(() => {
+    //       console.log("File deleted successfully");
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
 
-      // If the player is the captain or vice-captain, then update the captain and vice-captain details
-      if (details.id == teamDetails.captainId) {
-        await updateDoc(doc(db, "participating-teams", teamDetails.id), {
-          captainId: "",
-        });
-      }
-
-      if (details.id == teamDetails.viceCaptainId) {
-        await updateDoc(doc(db, "participating-teams", teamDetails.id), {
-          viceCaptainId: "",
-        });
-      }
+    // }
+    // If the player is the captain or vice-captain, then update the captain and vice-captain details
+    if (details.id == teamDetails.captainId) {
+      await updateDoc(doc(db, "participating-teams", teamDetails.id), {
+        captainId: "",
+      });
+    }
+    if (details.id == teamDetails.viceCaptainId) {
+      await updateDoc(doc(db, "participating-teams", teamDetails.id), {
+        viceCaptainId: "",
+      });
     }
     alert("Player deleted successfully");
     location.reload();
@@ -290,7 +383,10 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     );
   }
 
-  if (!validated && teams[teamDetails.teamName]?.capt_email !== session.user.email) {
+  if (
+    !validated &&
+    teams[teamDetails.teamName]?.capt_email !== session.user.email
+  ) {
     return (
       <div className="h-screen w-screen flex flex-col space-y-4 items-center justify-center">
         Sorry, you are not authorised to access this page!
@@ -442,7 +538,6 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
                         <tr className="border-b" key={index}>
                           <td className="px-4 py-2">
                             {member.imgUrl != "" ? (
-
                               <div className="w-20 h-20 overflow-hidden">
                                 <Image
                                   src={member.imgUrl}
@@ -490,15 +585,20 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
                   </label>
                 </div>
                 <div className="md:w-1/3">
-                  <input id="file" type="file" accept="image/*" style={{
-                    // width: '100%',
-                    height: 'auto',
-                    display: 'block',
-                    margin: '0 auto',
-                    // Set fixed width and height for the image input
-                   
-                    maxHeight: '100px', // Adjust the value as needed
-                  }} />
+                  <input
+                    id="file"
+                    type="file"
+                    accept="image/*"
+                    style={{
+                      // width: '100%',
+                      height: "auto",
+                      display: "block",
+                      margin: "0 auto",
+                      // Set fixed width and height for the image input
+
+                      maxHeight: "100px", // Adjust the value as needed
+                    }}
+                  />
                 </div>
               </div>
 
@@ -602,7 +702,7 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
                     className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                     id="edition"
                     type="text"
-                    defaultValue="17"
+                    defaultValue="18"
                     readOnly
                   />
                 </div>
@@ -683,7 +783,6 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
                               height={100}
                               className="border"
                               alt="Team Logo"
-
                             />
                           ) : (
                             <p className="text-center">No logo</p>

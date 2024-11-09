@@ -30,16 +30,33 @@ export async function getServerSideProps(context) {
         teamDetails = data;
 
         // Get all the documents from the collection participating-team-member having the teamId as data.id
-        let member_col = collection(db, "participating-team-member");
-        let q = query(member_col, where("teamId", "==", data.id),where("edition", "==", year));
-        await getDocs(q).then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            let data = doc.data();
-            data.id = doc.id;
-            data.teamId = team_id;
-            members.push(data);
+        let member_col = collection(db, "teamMembers");
+        let sixMembers=collection(db,"participating-team-member");
+        if(year==16)
+        {
+          let q = query(sixMembers, where("teamId", "==", data.id),where("edition","==",year));
+          await getDocs(q).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              let data = doc.data();
+              data.id = doc.id;
+              data.teamId = team_id;
+              members.push(data);
+            });
           });
-        });
+        }
+        else
+        {
+          let q = query(member_col, where(`teamId.${year}`, "==", data.id));
+          await getDocs(q).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              let data = doc.data();
+              data.id = doc.id;
+              data.teamId = team_id;
+              members.push(data);
+            });
+          });
+        }
+
         // Arrange the members in the order of captain, vice-captain and other members
         members.sort((a, b) => {
           if (

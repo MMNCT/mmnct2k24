@@ -54,6 +54,15 @@ const PlayerPastRecord = (props) => {
         <>
 
             <div style={boxStyle} className=" w-4/5 p-2 rounded-lg mx-auto my-5 ">
+            <div
+                    className={`${gender === "girl"
+                        ? " text-center w-full bg-pink-500 text-lg font-bold rounded-xl text-white space-x-3 "
+                        : "text-center w-full bg-blue-500 text-lg font-bold rounded-xl text-white space-x-3"
+                        } mb-2`}
+                >
+                    {" "}
+                    Edition {props?.edition}
+                </div>
                 <div
                     className={`${gender === "girl"
                         ? " text-center w-full bg-pink-500 text-lg font-bold rounded-xl text-white space-x-3 "

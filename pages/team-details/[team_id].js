@@ -20,7 +20,7 @@ export async function getServerSideProps(context) {
   const { team_id } = context.query;
   let teamDetails = {};
   let members = [];
-
+  const currEdition="18";
   // Get the document from the collection participating-teams having the id as team_id
   await getDoc(doc(db, "participating-teams", team_id)).then(
     async (docSnap) => {
@@ -30,8 +30,8 @@ export async function getServerSideProps(context) {
         teamDetails = data;
 
         // Get all the documents from the collection participating-team-member having the teamId as data.id
-        let member_col = collection(db, "participating-team-member");
-        let q = query(member_col, where("teamId", "==", data.id), where("edition", "==", "17"));
+        let member_col = collection(db, "teamMembers");
+        let q = query(member_col, where(`teamId.${currEdition}`, "==", data.id));
         await getDocs(q).then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
             let data = doc.data();

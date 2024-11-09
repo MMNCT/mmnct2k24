@@ -133,7 +133,7 @@ export default function UpdatePlayerModal({ details }) {
       );
     }
 
-    await setDoc(doc(db, "participating-team-member", details.id), {
+    await setDoc(doc(db, "teamMembers", details.id), {
       teamId: details.teamId,
       name: playerName,
       type: playerType,

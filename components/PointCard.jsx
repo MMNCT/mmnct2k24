@@ -28,7 +28,9 @@ const PointCard = (props) => {
           const arrSum = runRate.reduce((acc, val) => acc + val, 0);
 
           // Calculate the average
-          const netRunRate =noOfMatchPlayed > 0 ?( arrSum / noOfMatchPlayed).toFixed(2) : "0.00";
+          
+          // const netRunRate =noOfMatchPlayed > 0 ?( arrSum / noOfMatchPlayed).toFixed(2) : "0.00";
+          const netRunRate =curElem.totalRunsScored > 0 ?( (curElem.totalRunsScored*6/curElem.totalBallsPlayed)-(curElem.totalRunsScoredAgainst*6/curElem.totalBallsBowled)).toFixed(2) : "0.00";
         //console.log(noOfMatchPlayed + " "+bonus+" "+noOfMatchWon);
 
           return (

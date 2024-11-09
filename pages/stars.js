@@ -87,6 +87,7 @@ const responsive = {
 };
 export default function Stars({ playerStats }) {
   const [malePlayers, setmalePlayers] = useState([]);
+  const edition = "18";
   const [femalePlayers, setfemalePlayers] = useState([]);
   const [top5malebatsman, setTop5malebatsman] = useState([]);
   const [top5femalebatsman, setTop5femalebatsman] = useState([]);
@@ -120,18 +121,21 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const scoreDiff = getPlayerScored(b.stats) - getPlayerScored(a.stats);
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const scoreDiff =
+            getPlayerScored(b.stats[edition]) -
+            getPlayerScored(a.stats[edition]);
 
           if (scoreDiff === 0) {
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -147,18 +151,21 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const scoreDiff = getPlayerScored(b.stats) - getPlayerScored(a.stats);
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const scoreDiff =
+            getPlayerScored(b.stats[edition]) -
+            getPlayerScored(a.stats[edition]);
 
           if (scoreDiff === 0) {
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -176,14 +183,15 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const wicketDiff = b.stats[14] - a.stats[14];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const wicketDiff = b.stats[edition][14] - a.stats[edition][14];
 
           if (wicketDiff === 0) {
             // If wickets are the same, sort based on economy rate
             const economyRateDiff =
-              calculateEconomyRate(a.stats[13], a.stats[12]) -
-              calculateEconomyRate(b.stats[13], b.stats[12]);
+              calculateEconomyRate(a.stats[edition][13], a.stats[edition][12]) -
+              calculateEconomyRate(b.stats[edition][13], b.stats[edition][12]);
             return economyRateDiff;
           }
 
@@ -198,14 +206,15 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const wicketDiff = b.stats[14] - a.stats[14];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const wicketDiff = b.stats[edition][14] - a.stats[edition][14];
 
           if (wicketDiff === 0) {
             // If wickets are the same, sort based on economy rate
             const economyRateDiff =
-              calculateEconomyRate(a.stats[13], a.stats[12]) -
-              calculateEconomyRate(b.stats[13], b.stats[12]);
+              calculateEconomyRate(a.stats[edition][13], a.stats[edition][12]) -
+              calculateEconomyRate(b.stats[edition][13], b.stats[edition][12]);
             return economyRateDiff;
           }
 
@@ -222,18 +231,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const sixesDiff = b.stats[6] - a.stats[6];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const sixesDiff = b.stats[edition][6] - a.stats[edition][6];
           if (sixesDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -249,18 +259,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const sixesDiff = b.stats[6] - a.stats[6];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const sixesDiff = b.stats[edition][6] - a.stats[edition][6];
           if (sixesDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -278,18 +289,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const fourDiff = b.stats[4] - a.stats[4];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const fourDiff = b.stats[edition][4] - a.stats[edition][4];
           if (fourDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -305,18 +317,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const fourDiff = b.stats[4] - a.stats[4];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const fourDiff = b.stats[edition][4] - a.stats[edition][4];
           if (fourDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -334,18 +347,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const highestDiff = b.stats[11] - a.stats[11];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const highestDiff = b.stats[edition][11] - a.stats[edition][11];
           if (highestDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -360,18 +374,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const highestDiff = b.stats[11] - a.stats[11];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const highestDiff = b.stats[edition][11] - a.stats[edition][11];
           if (highestDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -389,18 +404,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const tuktukDiff = b.stats[0] - a.stats[0];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const tuktukDiff = b.stats[edition][0] - a.stats[edition][0];
           if (tuktukDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -416,18 +432,19 @@ export default function Stars({ playerStats }) {
           if (a.stats === undefined && b.stats === undefined) return 0;
           else if (a.stats === undefined) return 1;
           else if (b.stats === undefined) return -1;
-
-          const tuktukDiff = b.stats[0] - a.stats[0];
+          else if (a.stats[edition] === undefined) return 1;
+          else if (b.stats[edition] === undefined) return -1;
+          const tuktukDiff = b.stats[edition][0] - a.stats[edition][0];
           if (tuktukDiff === 0) {
             // If the number of sixes is the same, sort based on strike rate
             const strikeRateDiff =
               calculateStrikeRate(
-                getPlayerScored(a.stats),
-                getPlayerBalls(a.stats)
+                getPlayerScored(a.stats[edition]),
+                getPlayerBalls(a.stats[edition])
               ) -
               calculateStrikeRate(
-                getPlayerScored(b.stats),
-                getPlayerBalls(b.stats)
+                getPlayerScored(b.stats[edition]),
+                getPlayerBalls(b.stats[edition])
               );
             return strikeRateDiff;
           }
@@ -442,23 +459,21 @@ export default function Stars({ playerStats }) {
     const getData = async () => {
       const maleData = [];
       const femaleData = [];
-      const querySnapshot = await getDocs(
-        query(
-          collection(db, "participating-team-member"),
-          where("edition", "==", "17")
-        )
-      );
+      const querySnapshot = await getDocs(query(collection(db, "teamMembers")));
       querySnapshot.forEach((doc) => {
         const data = { id: doc.id, ...doc.data() };
-        if (getGender(data.teamId) === "male") {
-          maleData.push(data);
-        } else {
-          femaleData.push(data);
+        if (data.teamId.hasOwnProperty("18")) {
+          if (getGender(data.teamId[edition]) === "male") {
+            maleData.push(data);
+          } else {
+            femaleData.push(data);
+          }
         }
       });
       setmalePlayers(maleData);
       setfemalePlayers(femaleData);
     };
+    
     getData();
   }, []);
 
@@ -499,6 +514,7 @@ export default function Stars({ playerStats }) {
 
     return finalDecision;
   }
+  const initialRuns = getPlayerScored(top5femalebatsman[0]?.stats[edition]);
   return (
     <div>
       <Head>
@@ -507,147 +523,166 @@ export default function Stars({ playerStats }) {
       </Head>
 
       <Navbar />
-      <div className={`bg-gradient-to-b ${decisionsBasedonGender()} to-white`}>
-        <div>
-          {" "}
-          <p className=" text-4xl md:text-7xl font-extrabold text-white py-4 text-center tracking-widest">
-            MMNCT'23 STARS
-          </p>
-        </div>
-        <div className="bg-white my-2 mt-4 text-gray-500 flex justify-evenly w-[270px] md:w-[290px] mx-auto text-center font-[600] text-[16px] rounded-lg mb-6">
-          <div
-            onClick={() => {
-              setSelectedGender("male");
-            }}
-            className={`cursor-pointer h-[44px] flex justify-center items-center`}
-          >
-            <p
-              className={`${StylesBasedonGender(
-                "male"
-              )} flex items-center text-2xl font-semibold  justify-center rounded-lg`}
+      
+        <div
+          className={`bg-gradient-to-b ${decisionsBasedonGender()} to-white`}
+        >
+          <div>
+            {" "}
+            <p className=" text-4xl md:text-7xl font-extrabold text-white py-4 text-center tracking-widest">
+              MMNCT'24 STARS
+            </p>
+          </div>
+          <div className="bg-white my-2 mt-4 text-gray-500 flex justify-evenly w-[270px] md:w-[290px] mx-auto text-center font-[600] text-[16px] rounded-lg mb-6">
+            <div
+              onClick={() => {
+                setSelectedGender("male");
+              }}
+              className={`cursor-pointer h-[44px] flex justify-center items-center`}
             >
-              Men's
-            </p>
-          </div>
-          <div
-            onClick={() => {
-              setSelectedGender("female");
-            }}
-            className={`cursor-pointer h-[44px] flex justify-center items-center`}
-          >
-            <p
-              className={`${StylesBasedonGender(
-                "female"
-              )} flex items-center text-2xl font-semibold justify-center rounded-lg`}
+              <p
+                className={`${StylesBasedonGender(
+                  "male"
+                )} flex items-center text-2xl font-semibold  justify-center rounded-lg`}
+              >
+                Men's
+              </p>
+            </div>
+            <div
+              onClick={() => {
+                setSelectedGender("female");
+              }}
+              className={`cursor-pointer h-[44px] flex justify-center items-center`}
             >
-              Women's
-            </p>
+              <p
+                className={`${StylesBasedonGender(
+                  "female"
+                )} flex items-center text-2xl font-semibold justify-center rounded-lg`}
+              >
+                Women's
+              </p>
+            </div>
           </div>
-        </div>
-        <div>
-          <div className=" w-5/6 mx-auto gap-2 grid-cols-1 md:grid-cols-2  grid lg:grid-cols-3">
-            {selectedGender === "male" ? (
-              <>
-                <Link href={`/player-details/${top5malebatsman[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5malebatsman[0]}
-                    title="Most Runs"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5malebowler[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5malebowler[0]}
-                    title="Most Wickets"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5malefourer[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5malefourer[0]}
-                    title="Most 4s"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5malesixer[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5malesixer[0]}
-                    title="Most 6s"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5maletutktukbatsman[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5maletutktukbatsman[0]}
-                    title="Most Dot Balls"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5malehighestbatsman[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5malehighestbatsman[0]}
-                    title="Highest Score"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href={`/player-details/${top5femalebatsman[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5femalebatsman[0]}
-                    title="Most Runs"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5femalebowler[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5femalebowler[0]}
-                    title="Most Wickets"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5femalefourer[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5femalefourer[0]}
-                    title="Most 4s"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link href={`/player-details/${top5femalesixer[0]?.id}`}>
-                  <HighestScoreCard
-                    playerStats={top5femalesixer[0]}
-                    title="Most 6s"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link
-                  href={`/player-details/${top5femaletuktukbatsman[0]?.id}`}
-                >
-                  <HighestScoreCard
-                    playerStats={top5femaletuktukbatsman[0]}
-                    title="Most Dot Balls"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-                <Link
-                  href={`/player-details/${top5femalehighestbatsman[0]?.id}`}
-                >
-                  <HighestScoreCard
-                    playerStats={top5femalehighestbatsman[0]}
-                    title="Highest Score"
-                    selectedGender={selectedGender}
-                  />
-                </Link>
-              </>
-            )}
-          </div>
-          <div className="w-full  flex-col mx-auto mt-10 ">
-            <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
-              Top 5 Batsmen
-            </p>
+          <div>
+            <div className=" w-5/6 mx-auto gap-2 grid-cols-1 md:grid-cols-2  grid lg:grid-cols-3">
+              {selectedGender === "male" ? (
+                <>
+                  <Link href={`/player-details/${top5malebatsman[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5malebatsman[0]}
+                      title="Most Runs"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link href={`/player-details/${top5malebowler[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5malebowler[0]}
+                      title="Most Wickets"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link href={`/player-details/${top5malefourer[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5malefourer[0]}
+                      title="Most 4s"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link href={`/player-details/${top5malesixer[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5malesixer[0]}
+                      title="Most 6s"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link
+                    href={`/player-details/${top5maletutktukbatsman[0]?.id}`}
+                  >
+                    <HighestScoreCard
+                      playerStats={top5maletutktukbatsman[0]}
+                      title="Most Dot Balls"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link
+                    href={`/player-details/${top5malehighestbatsman[0]?.id}`}
+                  >
+                    <HighestScoreCard
+                      playerStats={top5malehighestbatsman[0]}
+                      title="Highest Score"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href={`/player-details/${top5femalebatsman[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5femalebatsman[0]}
+                      title="Most Runs"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link href={`/player-details/${top5femalebowler[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5femalebowler[0]}
+                      title="Most Wickets"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link href={`/player-details/${top5femalefourer[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5femalefourer[0]}
+                      title="Most 4s"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link href={`/player-details/${top5femalesixer[0]?.id}`}>
+                    <HighestScoreCard
+                      playerStats={top5femalesixer[0]}
+                      title="Most 6s"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link
+                    href={`/player-details/${top5femaletuktukbatsman[0]?.id}`}
+                  >
+                    <HighestScoreCard
+                      playerStats={top5femaletuktukbatsman[0]}
+                      title="Most Dot Balls"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                  <Link
+                    href={`/player-details/${top5femalehighestbatsman[0]?.id}`}
+                  >
+                    <HighestScoreCard
+                      playerStats={top5femalehighestbatsman[0]}
+                      title="Highest Score"
+                      selectedGender={selectedGender}
+                      edition={edition}
+                    />
+                  </Link>
+                </>
+              )}
+            </div>
+            <div className="w-full  flex-col mx-auto mt-10 ">
+              <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
+                Top 5 Batsmen
+              </p>
 
-            {/* <button
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".bat");
                   const scrollAmount = -300; // You can adjust the scroll amount as needed
@@ -659,47 +694,50 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleLeft className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:mr-2" />
               </button> */}
-            <div className="w-full mx-auto  rounded-md p-5 ">
-              <Carousel
-                itemClass="react-multi-carousel-item"
-                partialVisible={false}
-                responsive={responsive}
-                swipeable={true}
-                draggable={true}
-                arrows={false}
-                showDots={true}
-                keyBoardControl={true}
-                className="gd-carousel"
-                containerClass="carousel-container"
-                
-                
-              >
-                {selectedGender === "male"
-                  ? top5malebatsman.map((player, index) => {
-                      return (
+              <div className="w-full mx-auto  rounded-md p-5 ">
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                >
+                  {selectedGender === "male"
+                    ? top5malebatsman.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"batsman"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />{" "}
+                          </Link>
+                        );
+                      })
+                    : top5femalebatsman.map((player, index) => (
                         <Link href={`/player-details/${player.id}`} key={index}>
                           <PlayerProfilecard
                             playerStats={player}
                             selectedGender={selectedGender}
                             title={"batsman"}
                             Rank={index + 1}
-                          />{" "}
+                            edition={edition}
+                          />
                         </Link>
-                      );
-                    })
-                  : top5femalebatsman.map((player, index) => (
-                      <Link href={`/player-details/${player.id}`} key={index}>
-                        <PlayerProfilecard
-                          playerStats={player}
-                          selectedGender={selectedGender}
-                          title={"batsman"}
-                          Rank={index + 1}
-                        />
-                      </Link>
-                    ))}
-              </Carousel>
-            </div>
-            {/* <button
+                      ))}
+                </Carousel>
+              </div>
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".bat");
                   const scrollAmount = 300; // You can adjust the scroll amount as needed
@@ -711,12 +749,12 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleRight className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:ml-2" />
               </button> */}
-          </div>
-          <div className="w-full  flex-col mx-auto mt-10 ">
-            <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
-              Top 5 Bowlers
-            </p>
-            {/* <div
+            </div>
+            <div className="w-full  flex-col mx-auto mt-10 ">
+              <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
+                Top 5 Bowlers
+              </p>
+              {/* <div
               className="w-full grid grid-flow-col overflow-x-auto   gap-x-5 scrollbar-hide "
               style={{}}
             >
@@ -739,7 +777,7 @@ export default function Stars({ playerStats }) {
               }
             </div> */}
 
-            {/* <button
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".ixer");
                   const scrollAmount = -300; // You can adjust the scroll amount as needed
@@ -751,51 +789,51 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleLeft className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:mr-2" />
               </button> */}
-            <div className="w-full mx-auto  rounded-md p-5 ">
-              <Carousel
-                itemClass="react-multi-carousel-item"
-                partialVisible={false}
-                responsive={responsive}
-                swipeable={true}
-                draggable={true}
-                arrows={false}
-                showDots={true}
-                keyBoardControl={true}
-                className="gd-carousel"
-                containerClass="carousel-container"
-                
-               
-              >
-                {selectedGender === "male"
-                  ? top5malebowler.map((player, index) => (
-                      <Link
-                        href={`/player-details/${player.id}`}
-                        key={player.id}
-                      >
-                        <PlayerProfilecard
-                          playerStats={player}
-                          selectedGender={selectedGender}
-                          title={"bowler"}
-                          Rank={index + 1}
-                        />
-                      </Link>
-                    ))
-                  : top5femalebowler.map((player, index) => (
-                      <Link
-                        href={`/player-details/${player.id}`}
-                        key={player.id}
-                      >
-                        <PlayerProfilecard
-                          playerStats={player}
-                          selectedGender={selectedGender}
-                          title={"bowler"}
-                          Rank={index + 1}
-                        />
-                      </Link>
-                    ))}
-              </Carousel>
-            </div>
-            {/* <button
+              <div className="w-full mx-auto  rounded-md p-5 ">
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                >
+                  {selectedGender === "male"
+                    ? top5malebowler.map((player, index) => (
+                        <Link
+                          href={`/player-details/${player.id}`}
+                          key={player.id}
+                        >
+                          <PlayerProfilecard
+                            playerStats={player}
+                            selectedGender={selectedGender}
+                            title={"bowler"}
+                            Rank={index + 1}
+                            edition={edition}
+                          />
+                        </Link>
+                      ))
+                    : top5femalebowler.map((player, index) => (
+                        <Link
+                          href={`/player-details/${player.id}`}
+                          key={player.id}
+                        >
+                          <PlayerProfilecard
+                            playerStats={player}
+                            selectedGender={selectedGender}
+                            title={"bowler"}
+                            Rank={index + 1}
+                            edition={edition}
+                          />
+                        </Link>
+                      ))}
+                </Carousel>
+              </div>
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".ixer");
                   const scrollAmount = 300; // You can adjust the scroll amount as needed
@@ -807,13 +845,13 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleRight className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:ml-2" />
               </button> */}
-          </div>
-          <div className="w-full  flex-col mx-auto mt-10 ">
-            <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
-              Top 5 Sixers
-            </p>
+            </div>
+            <div className="w-full  flex-col mx-auto mt-10 ">
+              <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
+                Top 5 Sixers
+              </p>
 
-            {/* <button
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".sixer");
                   const scrollAmount = -300; // You can adjust the scroll amount as needed
@@ -825,49 +863,55 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleLeft className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:mr-2" />
               </button> */}
-            <div className="w-full mx-auto  rounded-md p-5 ">
-              <Carousel
-                itemClass="react-multi-carousel-item"
-                partialVisible={false}
-                responsive={responsive}
-                swipeable={true}
-                draggable={true}
-                arrows={false}
-                showDots={true}
-                keyBoardControl={true}
-                className="gd-carousel"
-                containerClass="carousel-container"
-                
-                
-              >
-                {selectedGender === "male"
-                  ? top5malesixer.map((player, index) => {
-                      return (
-                        <Link href={`/player-details/${player.id}`} key={index}>
-                          <PlayerProfilecard
-                            playerStats={player}
-                            selectedGender={selectedGender}
-                            title={"six"}
-                            Rank={index + 1}
-                          />
-                        </Link>
-                      );
-                    })
-                  : top5femalesixer.map((player, index) => {
-                      return (
-                        <Link href={`/player-details/${player.id}`} key={index}>
-                          <PlayerProfilecard
-                            playerStats={player}
-                            selectedGender={selectedGender}
-                            title={"six"}
-                            Rank={index + 1}
-                          />
-                        </Link>
-                      );
-                    })}
-              </Carousel>
-            </div>
-            {/* <button
+              <div className="w-full mx-auto  rounded-md p-5 ">
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                >
+                  {selectedGender === "male"
+                    ? top5malesixer.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"six"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })
+                    : top5femalesixer.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"six"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })}
+                </Carousel>
+              </div>
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".sixer");
                   const scrollAmount = 300; // You can adjust the scroll amount as needed
@@ -879,13 +923,13 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleRight className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:ml-2" />
               </button> */}
-          </div>
-          <div className="w-full  flex-col mx-auto mt-10 ">
-            <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
-              Top 5 Fourers
-            </p>
+            </div>
+            <div className="w-full  flex-col mx-auto mt-10 ">
+              <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
+                Top 5 Fourers
+              </p>
 
-            {/* <button
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".fourer");
                   const scrollAmount = -300; // You can adjust the scroll amount as needed
@@ -898,54 +942,60 @@ export default function Stars({ playerStats }) {
                 <TfiArrowCircleLeft className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:mr-2" />
               </button> */}
 
-            {/* <div
+              {/* <div
                 className="w-full grid grid-flow-col overflow-x-auto fourer  gap-x-5 scrollbar-hide "
                 data-selected-gender={selectedGender}
               > */}
-            <div className="w-full mx-auto  rounded-md p-5 ">
-              <Carousel
-                itemClass="react-multi-carousel-item"
-                partialVisible={false}
-                responsive={responsive}
-                swipeable={true}
-                draggable={true}
-                arrows={false}
-                showDots={true}
-                keyBoardControl={true}
-                className="gd-carousel"
-                containerClass="carousel-container"
-               
-                
-              >
-                {selectedGender === "male"
-                  ? top5malefourer.map((player, index) => {
-                      return (
-                        <Link href={`/player-details/${player.id}`} key={index}>
-                          <PlayerProfilecard
-                            playerStats={player}
-                            selectedGender={selectedGender}
-                            title={"four"}
-                            Rank={index + 1}
-                          />
-                        </Link>
-                      );
-                    })
-                  : top5femalefourer.map((player, index) => {
-                      return (
-                        <Link href={`/player-details/${player.id}`} key={index}>
-                          <PlayerProfilecard
-                            playerStats={player}
-                            selectedGender={selectedGender}
-                            title={"four"}
-                            Rank={index + 1}
-                          />
-                        </Link>
-                      );
-                    })}
-              </Carousel>
-            </div>
-            {/* </div> */}
-            {/* <button
+              <div className="w-full mx-auto  rounded-md p-5 ">
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                >
+                  {selectedGender === "male"
+                    ? top5malefourer.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"four"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })
+                    : top5femalefourer.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"four"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })}
+                </Carousel>
+              </div>
+              {/* </div> */}
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".fourer");
                   const scrollAmount = 300; // You can adjust the scroll amount as needed
@@ -957,13 +1007,13 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleRight className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:ml-2" />
               </button> */}
-          </div>
-          <div className="w-full  flex-col mx-auto mt-10 ">
-            <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
-              Top 5 Highest Scores
-            </p>
+            </div>
+            <div className="w-full  flex-col mx-auto mt-10 ">
+              <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
+                Top 5 Highest Scores
+              </p>
 
-            {/* <button
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".highest");
                   const scrollAmount = -300; // You can adjust the scroll amount as needed
@@ -976,46 +1026,50 @@ export default function Stars({ playerStats }) {
                 <TfiArrowCircleLeft className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:mr-2" />
               </button> */}
 
-            <div className="w-full mx-auto  rounded-md p-5 ">
-              <Carousel
-                itemClass="react-multi-carousel-item"
-                partialVisible={false}
-                responsive={responsive}
-                swipeable={true}
-                draggable={true}
-                arrows={false}
-                showDots={true}
-                keyBoardControl={true}
-                className="gd-carousel"
-                containerClass="carousel-container"
-               
-              >
-                {selectedGender === "male"
-                  ? top5malehighestbatsman.map((player, index) => {
-                      return (
+              <div className="w-full mx-auto  rounded-md p-5 ">
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                >
+                  {selectedGender === "male"
+                    ? top5malehighestbatsman.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"highestScore"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })
+                    : top5femalehighestbatsman.map((player, index) => (
                         <Link href={`/player-details/${player.id}`} key={index}>
                           <PlayerProfilecard
                             playerStats={player}
                             selectedGender={selectedGender}
                             title={"highestScore"}
                             Rank={index + 1}
+                            edition={edition}
                           />
                         </Link>
-                      );
-                    })
-                  : top5femalehighestbatsman.map((player, index) => (
-                      <Link href={`/player-details/${player.id}`} key={index}>
-                        <PlayerProfilecard
-                          playerStats={player}
-                          selectedGender={selectedGender}
-                          title={"highestScore"}
-                          Rank={index + 1}
-                        />
-                      </Link>
-                    ))}
-              </Carousel>
-            </div>
-            {/* <button
+                      ))}
+                </Carousel>
+              </div>
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".highest");
                   const scrollAmount = 300; // You can adjust the scroll amount as needed
@@ -1027,13 +1081,13 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleRight className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:ml-2" />
               </button> */}
-          </div>
-          <div className="w-full  flex-col mx-auto mt-10 ">
-            <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
-              Top 5 Tuk Tuk Players
-            </p>
+            </div>
+            <div className="w-full  flex-col mx-auto mt-10 ">
+              <p className="text-center  text-2xl md:text-4xl font-bold mb-5  text-black ">
+                Top 5 Tuk Tuk Players
+              </p>
 
-            {/* <button
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".tuktuk");
                   const scrollAmount = -300; // You can adjust the scroll amount as needed
@@ -1046,47 +1100,55 @@ export default function Stars({ playerStats }) {
                 <TfiArrowCircleLeft className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:mr-2" />
               </button> */}
 
-            <div className="w-full mx-auto  rounded-md p-5 ">
-              <Carousel
-                itemClass="react-multi-carousel-item"
-                partialVisible={false}
-                responsive={responsive}
-                swipeable={true}
-                draggable={true}
-                arrows={false}
-                showDots={true}
-                keyBoardControl={true}
-                className="gd-carousel"
-                containerClass="carousel-container"
-              >
-                {selectedGender === "male"
-                  ? top5maletutktukbatsman.map((player, index) => {
-                      return (
-                        <Link href={`/player-details/${player.id}`} key={index}>
-                          <PlayerProfilecard
-                            playerStats={player}
-                            selectedGender={selectedGender}
-                            title={"tuktuk"}
-                            Rank={index + 1}
-                          />
-                        </Link>
-                      );
-                    })
-                  : top5femaletuktukbatsman.map((player, index) => {
-                      return (
-                        <Link href={`/player-details/${player.id}`} key={index}>
-                          <PlayerProfilecard
-                            playerStats={player}
-                            selectedGender={selectedGender}
-                            title={"tuktuk"}
-                            Rank={index + 1}
-                          />
-                        </Link>
-                      );
-                    })}
-              </Carousel>
-            </div>
-            {/* <button
+              <div className="w-full mx-auto  rounded-md p-5 ">
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                >
+                  {selectedGender === "male"
+                    ? top5maletutktukbatsman.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"tuktuk"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })
+                    : top5femaletuktukbatsman.map((player, index) => {
+                        return (
+                          <Link
+                            href={`/player-details/${player.id}`}
+                            key={index}
+                          >
+                            <PlayerProfilecard
+                              playerStats={player}
+                              selectedGender={selectedGender}
+                              title={"tuktuk"}
+                              Rank={index + 1}
+                              edition={edition}
+                            />
+                          </Link>
+                        );
+                      })}
+                </Carousel>
+              </div>
+              {/* <button
                 onClick={() => {
                   const container = document.querySelector(".tuktuk");
                   const scrollAmount = 300; // You can adjust the scroll amount as needed
@@ -1098,14 +1160,21 @@ export default function Stars({ playerStats }) {
               >
                 <TfiArrowCircleRight className="h-[25px] w-[25px] md:h-[40px] md:w-[40px] mx-1 md:ml-2" />
               </button> */}
+            </div>
           </div>
         </div>
-      </div>
+        
       <Footer />
     </div>
   );
 }
-const PlayerProfilecard = ({ playerStats, selectedGender, title, Rank }) => {
+const PlayerProfilecard = ({
+  playerStats,
+  selectedGender,
+  title,
+  Rank,
+  edition,
+}) => {
   let statTitle1 = "",
     statTitle2 = "",
     statTitle3 = "",
@@ -1188,7 +1257,7 @@ const PlayerProfilecard = ({ playerStats, selectedGender, title, Rank }) => {
             {" "}
             {/* {playerTeam} */}
             {/* Vengeance */}
-            {getTeamCategory(playerStats?.teamId)}
+            {getTeamCategory(playerStats?.teamId[edition])}
           </p>
           <p className="text-sm font-bold  text-center  ">
             {" "}
@@ -1224,8 +1293,10 @@ const PlayerProfilecard = ({ playerStats, selectedGender, title, Rank }) => {
               </span>
               <span className="   text-center    text-sm font-bold  text-black space-x-1">
                 {" "}
-                {playerStats && playerStats?.stats && playerStats?.stats[10]
-                  ? playerStats?.stats[10]
+                {playerStats && playerStats?.stats &&
+                playerStats?.stats[edition] &&
+                playerStats?.stats[edition][10]
+                  ? playerStats?.stats[edition][10]
                   : 0}
               </span>
             </div>
@@ -1243,19 +1314,21 @@ const PlayerProfilecard = ({ playerStats, selectedGender, title, Rank }) => {
               </span>
               <span className="   text-center    text-sm font-bold  text-black space-x-1">
                 {" "}
-                {playerStats && playerStats?.stats && playerStats?.stats[10]
+                {playerStats && playerStats?.stats &&
+                playerStats?.stats[edition] &&
+                playerStats?.stats[edition][10]
                   ? statTitle2 === "Runs Scored"
-                    ? getPlayerScored(playerStats?.stats)
+                    ? getPlayerScored(playerStats?.stats[edition])
                     : statTitle2 === "Wickets"
-                    ? playerStats?.stats[14]
+                    ? playerStats?.stats[edition][14]
                     : statTitle2 === "Sixes"
-                    ? playerStats?.stats[6]
+                    ? playerStats?.stats[edition][6]
                     : statTitle2 === "Fours"
-                    ? playerStats?.stats[4]
+                    ? playerStats?.stats[edition][4]
                     : statTitle2 === "Dot Balls"
-                    ? playerStats?.stats[0]
+                    ? playerStats?.stats[edition][0]
                     : statTitle2 === "Highest Score"
-                    ? playerStats?.stats[11]
+                    ? playerStats?.stats[edition][11]
                     : 0
                   : 0}
               </span>
@@ -1275,17 +1348,18 @@ const PlayerProfilecard = ({ playerStats, selectedGender, title, Rank }) => {
                 </span>
                 <span className="   text-center    text-sm font-bold  text-black space-x-1">
                   {" "}
-                  {playerStats && playerStats?.stats
-                    ? statTitle3 === "Economy" && playerStats?.stats[12]
+                  {playerStats && playerStats?.stats && playerStats?.stats[edition]
+                    ? statTitle3 === "Economy" &&
+                      playerStats?.stats[edition][12]
                       ? calculateEconomyRate(
-                          playerStats?.stats[13],
-                          playerStats?.stats[12]
+                          playerStats?.stats[edition][13],
+                          playerStats?.stats[edition][12]
                         )
                       : statTitle3 === "Strike Rate"
                       ? (() => {
                           const strikeRate = calculateStrikeRate(
-                            getPlayerScored(playerStats?.stats),
-                            getPlayerBalls(playerStats?.stats)
+                            getPlayerScored(playerStats?.stats[edition]),
+                            getPlayerBalls(playerStats?.stats[edition])
                           );
                           {
                             /* console.log(playerStats?.name+" "+getPlayerBalls(playerStats?.stats)); */
@@ -1313,7 +1387,7 @@ const PlayerProfilecard = ({ playerStats, selectedGender, title, Rank }) => {
   );
 };
 
-const HighestScoreCard = ({ playerStats, title, selectedGender }) => {
+const HighestScoreCard = ({ playerStats, title, selectedGender, edition }) => {
   return (
     <div className="flex flex-col border-2 rounded-lg gap-8 h-[285px] w-full bg-white">
       <div
@@ -1348,7 +1422,7 @@ const HighestScoreCard = ({ playerStats, title, selectedGender }) => {
               }
             >
               {" "}
-              {getTeamCategory(playerStats?.teamId)} {/*teamName*/}
+              {getTeamCategory(playerStats?.teamId[edition])} {/*teamName*/}
             </p>
           </div>
         </div>
@@ -1376,19 +1450,21 @@ const HighestScoreCard = ({ playerStats, title, selectedGender }) => {
         }`}
       >
         {/* 152 count */}
-        {playerStats && playerStats?.stats && playerStats?.stats[10]
+        {playerStats && playerStats?.stats &&
+        playerStats?.stats[edition] &&
+        playerStats?.stats[edition][10]
           ? title === "Most Runs"
-            ? getPlayerScored(playerStats?.stats)
+            ? getPlayerScored(playerStats?.stats[edition])
             : title === "Most Wickets"
-            ? playerStats?.stats[14]
+            ? playerStats?.stats[edition][14]
             : title === "Most 6s"
-            ? playerStats?.stats[6]
+            ? playerStats?.stats[edition][6]
             : title === "Most 4s"
-            ? playerStats?.stats[4]
+            ? playerStats?.stats[edition][4]
             : title === "Most Dot Balls"
-            ? playerStats?.stats[0]
+            ? playerStats?.stats[edition][0]
             : title === "Highest Score"
-            ? playerStats?.stats[11]
+            ? playerStats?.stats[edition][11]
             : 0
           : 0}{" "}
       </div>
