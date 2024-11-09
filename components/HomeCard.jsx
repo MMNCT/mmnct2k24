@@ -427,7 +427,7 @@ function fetchDate() {
 function daysCaluclator() {
   var date = fetchDate();
   var today = new Date(date);
-  var date_to_reply = new Date("2024-11-13");
+  var date_to_reply = new Date("2024-11-14");
   var timeinmilisec = today.getTime() - date_to_reply.getTime();
   // console.log(Math.floor(timeinmilisec / (1000 * 60 * 60 * 24)));
   return Math.floor(timeinmilisec / (1000 * 60 * 60 * 24));
