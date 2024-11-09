@@ -31,15 +31,15 @@ const TournamentHistory = () => {
         </strong>
         . <br />
         <br />
-        Dates of <strong>18th</strong> edition of the tournament will be announced soon
-        {/* <strong> October 26</strong> and end with the{" "}
-        <strong>finale on October 29</strong>. */}
+        The <strong>18th</strong> edition of the tournament will be starting from
+        <strong> November 14</strong> and end with the{" "}
+        <strong>Finals on November 17</strong>.
          <br />
         <br />
         The teams will comprise of B.Tech, M.Sc., M.Tech, Ph.D. students,
         localites, mess staff, and Faculty members. <br />
         <br />
-        The tournament features 15 men's and 5 women's teams competing against
+        The tournament features 15 men's and 6 women's teams competing against
         each other to claim the ultimate title in their category.
       </div>
       {/* <br /> */}

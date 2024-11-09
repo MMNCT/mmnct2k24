@@ -43,18 +43,21 @@ function HomePage({ teamlist }) {
           
         </div>
         {/* <WinnersAnnouncement teamlist={winnerTeamList} /> */}
-        <p className="font-[800] text-[24px] md:text-[32px] md:leading-[29.26px] md:ml-[48px]">
-            {/* 26<sup>th</sup> - 29<sup>th</sup> <br className="hidden md:flex" />
-            October, 2023 */}
-            coming soon...
+
+        <p className="font-[800] text-[24px] md:text-[32px] md:leading-[29.26px] 
+        ">
+            {/* 14<sup>th</sup> - 17<sup>th</sup> <br className="hidden md:flex" />
+            November, 2024 */}
+            {/* coming soon... */}
           </p>
+          
       </div>
 
       <div className="w-full md:w-4/5 md:mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
         {/* graphic and venue along with days to go */}
 
         <div>
-          {/* <HomeCard /> */}
+          <HomeCard />
           {/* {(new Date().getDate() === 25 && new Date().getMonth()===9 && new Date().getFullYear() === 2023 )?<>
             <div className=" flex justify-center items-center w-4/5 md:w-[400px] days-counter mx-auto md:mx-0 md:mb-4 md:gap-4 h-[116px] md:h-[150px]">
             <div className="text-[#991746]">
