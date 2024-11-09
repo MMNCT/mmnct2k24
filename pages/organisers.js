@@ -12,7 +12,7 @@ export async function getServerSideProps() {
   const querySnapshot = await getDocs(
     query(
       collection(db, "team"),
-      where("edition", "==", "17"),
+      where("edition", "==", "18"),
       orderBy("name", "desc")
     )
   );
@@ -48,6 +48,7 @@ export async function getServerSideProps() {
       president,
       coordinators,
       designers,
+      developers,
       content_creators,
       in_house,
       sponsorship
@@ -59,11 +60,12 @@ export default function Organisers({
   president,
   coordinators,
   designers,
+  developers,
   content_creators,
   in_house,
   sponsorship
 }) {
-  console.log(sponsorship);
+  // console.log(sponsorship);
   return (
     <div>
       <Head>
@@ -106,6 +108,25 @@ export default function Organisers({
           {coordinators.length != 0 &&
             coordinators.map((coordinator, index) => {
               return <Teamcard details={coordinator} key={index} />;
+            })}
+        </div>
+      </div>
+      <div className="text-center mt-28 mb-10">
+        <h1 className="text-3xl font-semibold mb-2">Developers</h1>
+        <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-3/12 mx-auto mb-4 lg:mb-8"></div>
+        {developers.length == 0 && (
+          <Image
+            src="/loader.gif"
+            width={330}
+            height={400}
+            className="w-full md:w-2/5 md:mx-auto md:rounded-xl"
+            alt="loading"
+          />
+        )}
+        <div className="grid gap-2 lg:grid-cols-1 justify-items-center place-items-center ">
+          {developers.length != 0 &&
+            developers.map((developer, index) => {
+              return <Teamcard details={developer} key={index} />;
             })}
         </div>
       </div>

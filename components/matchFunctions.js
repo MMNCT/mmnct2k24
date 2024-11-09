@@ -252,11 +252,13 @@ async function getPlayersByTeamName(teamName) {
   try {
     //Get the team ID using the provided function
     const teamId = await getTeamIdFromName(teamName);
+    const currEdition="18";
     if (teamId) {
 
       //Query the "participating-team-member" collection for players with the matching "teamId"
-      const playersCollection = collection(db, "participating-team-member");
-      const playersQuery = query(playersCollection, where("teamId", "==", teamId), where("edition", "==", "17"));
+      const playersCollection = collection(db, "teamMembers");
+      const playersQuery = query(playersCollection, where(`teamId.${currEdition}`, "==", teamId));
+      //changes required here
       const querySnapshot = await getDocs(playersQuery);
 
       const players = [];
@@ -497,6 +499,8 @@ async function afterMatchClosed(matchId) {
 
     //console.log(teamOneid);
     //console.log(teamTwoid);
+    await updateTeamScore(teamOneid, Team1totalScore,team1TotalBalls,Team2totalScore,team2TotalBalls);
+    await updateTeamScore(teamTwoid, Team2totalScore,team2TotalBalls,Team1totalScore,team1TotalBalls);
     await updateNetRunRate(teamOneid, teamTwoid, Team1totalScore, Team2totalScore, team1TotalBalls, team2TotalBalls);
   }
   let playerDetail = Object.entries(data.Team1Players);
@@ -509,7 +513,40 @@ async function afterMatchClosed(matchId) {
   }
   return 0;
 }
+async function updateTeamScore(teamId, runsScored, ballsPlayed, runsScoredAgainst, ballsBowled) {
+  try {
+    // Reference the document for the specific team
+    const [runs, team1wickets] = runsScored.split('/').map(Number);
+      ballsPlayed = team1wickets === 10 ? 48 : ballsPlayed;
+  const [runsAgainst, team2wickets] = runsScoredAgainst.split('/').map(Number);
+     ballsBowled = team2wickets === 10 ? 48 : ballsBowled;
+    const teamDocRef = doc(db, 'participating-teams', teamId);
 
+    // Get the current document data
+    const teamDoc = await getDoc(teamDocRef);
+
+    if (teamDoc.exists()) {
+      // Get the current score or set it to 0 if it doesn't exist
+      const currentScore = teamDoc.data()?.totalRunsScored || 0;
+      const currentBalls=teamDoc.data()?.totalBallsPlayed || 0;
+      const currentRunsScoredAgainst=teamDoc.data().totalRunsScoredAgainst ||0;
+      const currentBallsBowled=teamDoc.data().totalBallsBowled ||0;
+      // Add the new score to the current score
+      const updatedScore = currentScore + runs;
+      const updatedBalls=currentBalls+ballsPlayed;
+      const updatedScoreAgainst=currentRunsScoredAgainst+runsAgainst;
+      const updatedBallsBowled=currentBallsBowled+ballsBowled;
+      // Update the document with the new total score
+      await updateDoc(teamDocRef, { totalRunsScored: updatedScore,totalBallsPlayed:updatedBalls,totalBallsBowled:updatedBallsBowled,totalRunsScoredAgainst:updatedScoreAgainst });
+
+      console.log(`Successfully updated team ${teamId} with new total score:`, updatedScore);
+    } else {
+      console.error(`Team ${teamId} not found in the database.`);
+    }
+  } catch (error) {
+    console.error(`Error updating team ${teamId}:`, error);
+  }
+}
 
 
 const getPlayerScore = (players, player) => {
@@ -527,52 +564,238 @@ const getPlayerScore = (players, player) => {
   return totalRuns + "(" + ballPlayed + ")";
 }
 
+// async function updatePlayerHistory(playerId, playerData, matchId, OpponentId, data) {
+
+//   const playerDocRef = doc(db, `teamMembers/${playerId}`);
+//   const edition="18";
+//   playerData.score[11] = getPlayerScored(playerData.score);
+//   getDoc(playerDocRef)
+//     .then((docSnapshot) => {
+//       if (docSnapshot.exists()) {
+//         const data = docSnapshot.data();
+//         // if (!data.hasOwnProperty('stats')) {
+//         //   // Field does not exist, so add it
+//         //   const updateObject = {
+//         //     stats: playerData.score,
+//         //     [`pastrecords.${matchId}`]: {
+//         //       score: playerData.score,
+//         //       opponent: OpponentId
+//         //     }
+//         //   };
+//         //   return updateDoc(playerDocRef, updateObject);
+//         // } else {
+//         //   const existingStats = data['stats'];
+//         //   const updatedStats = existingStats.map((value, index) => {
+//         //     return (index !== 11) ?
+//         //       value + playerData.score[index] :
+//         //       (playerData.score[11] > value ? playerData.score[11] : value)
+//         //   })
+//         //   const updateObject = {
+//         //     stats: updatedStats,
+//         //     [`pastrecords.${matchId}`]: {
+//         //       score: playerData.score,
+//         //       opponent: OpponentId
+//         //     }
+//         //   };
+//         //   return updateDoc(playerDocRef, updateObject);
+//         // }
+//         if (!data.hasOwnProperty('stats')) {
+//           // Field does not exist, so add it with the initial structure
+//           const updateObject = {
+//             stats: {
+//               [edition]: [playerData.score] // edition is the key and value is an array
+//             },
+//             pastrecords: {
+//               [edition]: {
+//                 [matchId]: {
+//                   score: playerData.score,
+//                   opponent: OpponentId
+//                 }
+//               }
+//             }
+//           };
+//           return updateDoc(playerDocRef, updateObject);
+//         } else {
+//           // Update stats by preserving existing values
+//           const existingStats = data['stats'];
+//           const currEditionStats=data['stats'][edition];
+//           const updatedStats = currEditionStats.map((value, index) => {
+//             return (index !== 11) ?
+//               value + playerData.score[index] :
+//               (playerData.score[11] > value ? playerData.score[11] : value)
+//           })
+//           existingStats[edition]=updatedStats;
+//           // Update pastrecords by preserving existing values
+//           const existingPastRecords = { ...data?.pastrecords };
+//           if (!existingPastRecords.hasOwnProperty(edition)) {
+//             // Edition does not exist, create it with the match
+//             existingPastRecords[edition] = {
+//               [matchId]: {
+//                 score: playerData.score,
+//                 opponent: OpponentId
+//               }
+//             };
+//           } else {
+//             // Edition exists, update or add the match without overwriting existing matches
+//             existingPastRecords[edition] = {
+//               ...existingPastRecords[edition],
+//               [matchId]: {
+//                 score: playerData.score,
+//                 opponent: OpponentId
+//               }
+//             };
+//           }
+        
+//           const updateObject = {
+//             stats: existingStats,
+//             pastrecords: existingPastRecords
+//           };
+//           return updateDoc(playerDocRef, updateObject);
+//         }
+
+//       } else {
+//         console.log('No such document!');
+//       }
+//     })
+//     .then(() => {
+//       console.log('Field added or updated successfully.');
+//     })
+//     .catch((error) => {
+//       console.error('Error adding or updating field:', error);
+//     });
+
+//     // const data = docSnapshot.data();
+//     // if (!data.hasOwnProperty('stats')) {
+//     //   // Field does not exist, so add it with the initial structure
+//     //   const updateObject = {
+//     //     stats: {
+//     //       [edition]: [playerData.score] // edition is the key and value is an array
+//     //     },
+//     //     pastrecords: {
+//     //       [edition]: {
+//     //         [matchId]: {
+//     //           score: playerData.score,
+//     //           opponent: OpponentId
+//     //         }
+//     //       }
+//     //     }
+//     //   };
+//     //   return updateDoc(playerDocRef, updateObject);
+//     // } else {
+//     //   // Update stats by preserving existing values
+//     //   const existingStats = { ...data.stats };
+//     //   if (!existingStats.hasOwnProperty(edition)) {
+//     //     // Edition does not exist, add the array for the edition
+//     //     existingStats[edition] = [playerData.score];
+//     //   } else {
+//     //     // Edition exists, push the score to the existing array
+//     //     existingStats[edition] = [...existingStats[edition], playerData.score];
+//     //   }
+    
+//     //   // Update pastrecords by preserving existing values
+//     //   const existingPastRecords = { ...data.pastrecords };
+//     //   if (!existingPastRecords.hasOwnProperty(edition)) {
+//     //     // Edition does not exist, create it with the match
+//     //     existingPastRecords[edition] = {
+//     //       [matchId]: {
+//     //         score: playerData.score,
+//     //         opponent: OpponentId
+//     //       }
+//     //     };
+//     //   } else {
+//     //     // Edition exists, update or add the match without overwriting existing matches
+//     //     existingPastRecords[edition] = {
+//     //       ...existingPastRecords[edition],
+//     //       [matchId]: {
+//     //         score: playerData.score,
+//     //         opponent: OpponentId
+//     //       }
+//     //     };
+//     //   }
+    
+//     //   const updateObject = {
+//     //     stats: existingStats,
+//     //     pastrecords: existingPastRecords
+//     //   };
+//     //   return updateDoc(playerDocRef, updateObject);
+//     // }
+    
+//   }
 async function updatePlayerHistory(playerId, playerData, matchId, OpponentId, data) {
+  try {
+    const playerDocRef = doc(db, `teamMembers/${playerId}`);
+    const edition = "18";
+    playerData.score[11] = getPlayerScored(playerData.score);
 
-  const playerDocRef = doc(db, `participating-team-member/${playerId}`);
-  playerData.score[11] = getPlayerScored(playerData.score);
-  getDoc(playerDocRef)
-    .then((docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
-        if (!data.hasOwnProperty('stats')) {
-          // Field does not exist, so add it
-          const updateObject = {
-            stats: playerData.score,
-            [`pastrecords.${matchId}`]: {
-              score: playerData.score,
-              opponent: OpponentId
+    const docSnapshot = await getDoc(playerDocRef);
+
+    if (docSnapshot.exists()) {
+      const data = docSnapshot.data();
+
+      // Ensure 'stats' field exists; otherwise, create it
+      if (!data.hasOwnProperty('stats')) {
+        const updateObject = {
+          stats: {
+            [edition]: [...playerData.score] // Create an array for the edition
+          },
+          pastrecords: {
+            [edition]: {
+              [matchId]: {
+                score: playerData.score,
+                opponent: OpponentId
+              }
             }
-          };
-          return updateDoc(playerDocRef, updateObject);
-        } else {
-          const existingStats = data['stats'];
-          const updatedStats = existingStats.map((value, index) => {
-            return (index !== 11) ?
-              value + playerData.score[index] :
-              (playerData.score[11] > value ? playerData.score[11] : value)
-          })
-          const updateObject = {
-            stats: updatedStats,
-            [`pastrecords.${matchId}`]: {
-              score: playerData.score,
-              opponent: OpponentId
-            }
-          };
-          return updateDoc(playerDocRef, updateObject);
-        }
+          }
+        };
+        await updateDoc(playerDocRef, updateObject);
       } else {
-        console.log('No such document!');
-      }
-    })
-    .then(() => {
-      console.log('Field added or updated successfully.');
-    })
-    .catch((error) => {
-      console.error('Error adding or updating field:', error);
-    });
+        // Update existing stats
+        const existingStats = { ...data['stats'] };
+        const currEditionStats = existingStats[edition] || Array(playerData.score.length).fill(0);
 
+        // Calculate updated stats
+        const updatedStats = currEditionStats.map((value, index) => {
+          return (index !== 11) ?
+            value + playerData.score[index] :
+            (playerData.score[11] > value ? playerData.score[11] : value);
+        });
+        existingStats[edition] = updatedStats;
+
+        // Update pastrecords
+        const existingPastRecords = { ...data['pastrecords'] };
+        if (!existingPastRecords.hasOwnProperty(edition)) {
+          existingPastRecords[edition] = {
+            [matchId]: {
+              score: playerData.score,
+              opponent: OpponentId
+            }
+          };
+        } else {
+          existingPastRecords[edition] = {
+            ...existingPastRecords[edition],
+            [matchId]: {
+              score: playerData.score,
+              opponent: OpponentId
+            }
+          };
+        }
+
+        const updateObject = {
+          stats: existingStats,
+          pastrecords: existingPastRecords
+        };
+        await updateDoc(playerDocRef, updateObject);
+      }
+
+      console.log('Field added or updated successfully.');
+    } else {
+      console.log('No such document!');
+    }
+  } catch (error) {
+    console.error('Error adding or updating field:', error);
+  }
 }
+
 function calculateMenRunRate(team1TotalScore, team2TotalScore, team1TotalBalls, team2TotalBalls) {
   //console.log("hiii");
   const [team1runs, team1wickets] = team1TotalScore.split('/').map(Number);
@@ -656,7 +879,7 @@ const updateManOfTheMatch = async (matchID, playerName) => {
 };
 const updateToss = async (matchID, winner, choice) => {
 
-  await update(ref(database, "matchDetail/" + matchID), {
+  await update(ref(database, "match/" + matchID), {
     "toss": winner,
     "decision": choice
   }).then(() => {

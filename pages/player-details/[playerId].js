@@ -24,46 +24,156 @@ import {
 // import { BsFullscreen } from "react-icons/bs";
 const PlayerDetails = () => {
   const router = useRouter();
+  const currEdition = "18";
   const [gender, setGender] = useState("boy");
-  const [playerTeam,setPlayerTeam] = useState("");
+  const [playerTeam, setPlayerTeam] = useState("");
   const getTeamCategory = () => {
     Object.keys(teams).map((key) => {
       const value = teams[key];
-      if (value.teamId === playerStats.teamId) {
+      if (value.teamId === playerStats.teamId[currEdition]) {
         //console.log(value.teamCategory);
-        (value.teamCategory === "female" ? setGender("girl") : setGender("boy"));
+        value.teamCategory === "female" ? setGender("girl") : setGender("boy");
       }
-    })
-  }
+    });
+  };
   const player = router.query.playerId;
   const [playerStats, setPlayerStats] = useState("");
+  // const getPlayerScore = (score) => {
+  //   var totalRuns = 0;
+  //   //var ballPlayed = 0;
+
+  //   if (score) {
+  //     for (var i = 0; i < 10; i++) {
+  //       if (score[i]) {
+  //         // console.log(score[i]);
+  //         totalRuns += i * score[i];
+
+  //       }
+  //     }
+  //   }
+  //   return totalRuns;
+  // }
   const getPlayerScore = (score) => {
-    var totalRuns = 0;
-    //var ballPlayed = 0;
-    if (score) {
-      for (var i = 0; i < 10; i++) {
-        if (score[i]) {
-          // console.log(score[i]);
-          totalRuns += i * score[i];
+    let totalRuns = 0;
 
+    if (score) {
+      // Iterate over each edition in the score object
+      for (const edition in score) {
+        if (score.hasOwnProperty(edition)) {
+          // Iterate through the array for the current edition
+          for (let i = 0; i < 10; i++) {
+            if (score[edition][i]) {
+              totalRuns += i * score[edition][i];
+            }
+          }
         }
       }
     }
+
     return totalRuns;
-  }
-  const getPlayerBalls = (score) => {
-    //var totalRuns = 0;
-    var ballPlayed = 0;
-    if (score) {
-      for (var i = 0; i < 10; i++) {
-        if (score) {
+  };
+  // const getPlayerBalls = (score) => {
+  //   //var totalRuns = 0;
+  //   var ballPlayed = 0;
+  //   if (score) {
+  //     for (var i = 0; i < 10; i++) {
+  //       if (score) {
 
-          ballPlayed += score[i];
+  //         ballPlayed += score[i];
+  //       }
+  //     }
+  //   }
+  //   return ballPlayed;
+  // }
+  const getPlayerBalls = (score) => {
+    let ballPlayed = 0;
+
+    if (score) {
+      // Iterate over each edition in the score object
+      for (const edition in score) {
+        if (score.hasOwnProperty(edition)) {
+          // Iterate through the array for the current edition
+          for (let i = 0; i < 10; i++) {
+            if (score[edition][i]) {
+              ballPlayed += score[edition][i];
+            }
+          }
         }
       }
     }
+
     return ballPlayed;
-  }
+  };
+
+  const getTotalMatchesPlayed = (score) => {
+    let totalMatches = 0;
+
+    if (score) {
+      // Iterate over each edition in the score object
+      for (const edition in score) {
+        if (score.hasOwnProperty(edition)) {
+          // Check if the array has the 11th element (index 10)
+          if (score[edition][10]) {
+            totalMatches += score[edition][10];
+          }
+        }
+      }
+    }
+
+    return totalMatches;
+  };
+  const getHighestScoreAcrossEditions = (score) => {
+    let highestScore = 0;
+
+    if (score) {
+      // Iterate over each edition in the score object
+      for (const edition in score) {
+        if (score.hasOwnProperty(edition)) {
+          // Check if the array has the 12th element (index 11)
+          if (score[edition][11] && score[edition][11] > highestScore) {
+            highestScore = score[edition][11];
+          }
+        }
+      }
+    }
+
+    return highestScore;
+  };
+  const getTotalWicketsTaken = (score) => {
+    let totalWickets = 0;
+
+    if (score) {
+      // Iterate over each edition in the score object
+      for (const edition in score) {
+        if (score.hasOwnProperty(edition)) {
+          // Check if the array has the 11th element (index 10)
+          if (score[edition][14]) {
+            totalWickets += score[edition][14];
+          }
+        }
+      }
+    }
+
+    return totalWickets;
+  };
+
+  const scoreFormat = (score, indx) => {
+    let scoring = 0;
+
+    if (score) {
+      // Iterate over each edition in the score object
+      for (const edition in score) {
+        if (score.hasOwnProperty(edition)) {
+          // Check if the array has the 11th element (index 10)
+          if (score[edition][indx]) {
+            scoring += score[edition][indx];
+          }
+        }
+      }
+    }
+
+    return scoring;
+  };
 
   const calculateStrikeRate = (runs, balls) => {
     if (balls === 0) {
@@ -76,34 +186,34 @@ const PlayerDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const docRef = await doc(db, 'participating-team-member', player);
-        await getDoc(query(docRef)).then((querySnapshot) => {
-          let data = querySnapshot.data();
-          setPlayerStats(data);
-          getTeamCategory();
-        });
+        console.log(player);
+        const docRef = doc(db, "teamMembers", player);
+        const docSnapshot = await getDoc(docRef);
+        let data = docSnapshot.data();
+        setPlayerStats(data);
+        console.log(data); // Log fetched data instead of playerStats
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
-    fetchData();
-
+    if (player) fetchData();
   }, [player]);
 
   useEffect(() => {
-    const getTeamCategory = () => {
-      Object.keys(teams).map((key) => {
+    const getCategory = () => {
+      Object.keys(teams).forEach((key) => {
         const value = teams[key];
-        if (value.teamId === playerStats.teamId) {
-         // console.log(value.teamCategory);
-          (value.teamCategory === "female" ? setGender("girl") : setGender("boy"));
+        if (value.teamId === playerStats?.teamId[currEdition]) {
+          setGender(value.teamCategory === "female" ? "girl" : "boy");
           setPlayerTeam(key);
         }
-      })
+      });
     };
-    getTeamCategory();
-  }) , [playerStats]
-  
+    if (playerStats) {
+      getCategory();
+    }
+  }, [playerStats]); // Correct dependency
+
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -137,32 +247,32 @@ const PlayerDetails = () => {
 
   return (
     <>
-    <Head>
+      <Head>
         <title>Player Profile</title>
         <link rel="icon" href="/favicon.ico" />
-      </Head>
-      {" "}
+      </Head>{" "}
       <Navbar />
       <div className={`${gender === "girl" ? " " : ""}text-white`}>
         <div className="w-5/6 mx-auto my-4 shadow-lg text-black bg-white rounded-md">
           <div className="w-fit mx-auto flex justify-center  p-4 flex-col md:flex-row  gap-10 border-none  ">
-            
-              <Image
-                src={playerStats.imgUrl !== ""
+            <Image
+              src={
+                playerStats.imgUrl !== ""
                   ? playerStats.imgUrl
                   : gender == "boy"
-                    ? "/male.jpg"
-                    : "/female.jpg"}
-                alt="profile_pic"
-                width={200}
-                height={100}
-                className={`${gender === "girl"
+                  ? "/male.jpg"
+                  : "/female.jpg"
+              }
+              alt="profile_pic"
+              width={200}
+              height={100}
+              className={`${
+                gender === "girl"
                   ? " rounded-full flex justify-center h-[280px] w-[280px]  mx-auto aspect-square   align-middle items-center ring-4 ring-offset-4 ring-pink-500 sm:align-middle  "
                   : " rounded-full flex justify-center h-[280px] w-[280px]    mx-auto aspect-square   align-middle items-center ring-4 ring-offset-4 ring-blue-500 sm:align-middle "
-                  }
+              }
                  `}
-              />
-            
+            />
 
             {/* <hr className=" h-1  bg-green-500 my-3 lg:hidden md:hidden sm:block" /> */}
             <div className="     px-2  ">
@@ -171,8 +281,13 @@ const PlayerDetails = () => {
                 {playerStats?.name}
                 {/* {player Name} */}
               </p>
-              <p className={gender == "boy" ? `text-lg font-medium md:mt-4 text-center md:text-left lg:text-left mt-2 text-blue-500` 
-              :`text-lg font-medium md:mt-4 text-center md:text-left lg:text-left mt-2 text-pink-500`}>
+              <p
+                className={
+                  gender == "boy"
+                    ? `text-lg font-medium md:mt-4 text-center md:text-left lg:text-left mt-2 text-blue-500`
+                    : `text-lg font-medium md:mt-4 text-center md:text-left lg:text-left mt-2 text-pink-500`
+                }
+              >
                 {" "}
                 {playerTeam}
               </p>
@@ -198,20 +313,21 @@ const PlayerDetails = () => {
             </div>
           </div>
           <hr
-            className={`${gender === "girl"
-              ? " h-1 bg-pink-400 m-4 "
-              : "h-1 bg-blue-500 m-4"
-              }`}
+            className={`${
+              gender === "girl"
+                ? " h-1 bg-pink-400 m-4 "
+                : "h-1 bg-blue-500 m-4"
+            }`}
           />
           <div className="p-3 mx-auto  w-5/6">
             <div className=" rounded-xl  sm:flex md:flex-row gap-5">
-
               <div className="sm:w-1/2  md:w-full p-1 m-1 ">
                 <p
-                  className={`${gender === "girl"
-                    ? " text-center w-full bg-pink-500 text-lg font-bold rounded-xl text-white space-x-3 "
-                    : "text-center w-full bg-blue-500 text-lg font-bold rounded-xl text-white space-x-3 m-2"
-                    } `}
+                  className={`${
+                    gender === "girl"
+                      ? " text-center w-full bg-pink-500 text-lg font-bold rounded-xl text-white space-x-3 "
+                      : "text-center w-full bg-blue-500 text-lg font-bold rounded-xl text-white space-x-3 m-2"
+                  } `}
                 >
                   {" "}
                   Stats
@@ -224,7 +340,9 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[10] ? playerStats.stats[10] : 0}
+                    {playerStats && playerStats.stats
+                      ? getTotalMatchesPlayed(playerStats.stats)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
@@ -247,10 +365,11 @@ const PlayerDetails = () => {
                   <hr className=" bg-red-400" />
                 </div> */}
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -259,15 +378,18 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats ? getPlayerScore(playerStats.stats) : 0}
+                    {playerStats && playerStats.stats
+                      ? getPlayerScore(playerStats.stats)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -275,15 +397,21 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats ? calculateStrikeRate(getPlayerScore(playerStats.stats), getPlayerBalls(playerStats.stats)) : 0}
+                    {playerStats && playerStats.stats
+                      ? calculateStrikeRate(
+                          getPlayerScore(playerStats.stats),
+                          getPlayerBalls(playerStats.stats)
+                        )
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -291,15 +419,18 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[11] ? playerStats.stats[11] : 0}
+                    {playerStats && playerStats.stats
+                      ? getHighestScoreAcrossEditions(playerStats.stats)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -307,23 +438,27 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[14] ? playerStats.stats[14] : 0}
+                    {playerStats && playerStats.stats
+                      ? getTotalWicketsTaken(playerStats.stats)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
               </div>
               <div className="sm:w-1/2  md:w-full  p-1 m-1 ">
                 <p
-                  className={`${gender === "girl"
-                    ? " text-center w-full bg-pink-500 text-lg font-bold rounded-xl text-white space-x-3 "
-                    : "text-center w-full bg-blue-500 text-lg font-bold rounded-xl text-white space-x-3 m-2"
-                    } `}
+                  className={`${
+                    gender === "girl"
+                      ? " text-center w-full bg-pink-500 text-lg font-bold rounded-xl text-white space-x-3 "
+                      : "text-center w-full bg-blue-500 text-lg font-bold rounded-xl text-white space-x-3 m-2"
+                  } `}
                 >
                   {" "}
                   Scoring Stats
@@ -336,15 +471,18 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[1] ? playerStats.stats[1] : 0}
+                    {playerStats && playerStats.stats
+                      ? scoreFormat(playerStats.stats, 1)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
 
                 <div className=" rounded-xl flex m-3  ">
@@ -354,15 +492,18 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[2] ? playerStats.stats[2] : 0}
+                    {playerStats && playerStats.stats
+                      ? scoreFormat(playerStats.stats, 2)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -371,15 +512,18 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[4] ? playerStats.stats[4] : 0}
+                    {playerStats && playerStats.stats
+                      ? scoreFormat(playerStats.stats, 4)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -387,15 +531,18 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[6] ? playerStats.stats[6] : 0}
+                    {playerStats && playerStats.stats
+                      ? scoreFormat(playerStats.stats, 6)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
                 <div className=" rounded-xl flex m-3  ">
                   <p className="  text-center w-full pl-5 text-lg font-bold  rounded-l-md text-black space-x-3">
@@ -403,45 +550,82 @@ const PlayerDetails = () => {
                   </p>
                   <p className="   text-center w-full pl-5  text-lg font-bold rounded-r-md text-black space-x-3">
                     {" "}
-                    {playerStats && playerStats.stats && playerStats.stats[0] ? playerStats.stats[0] : 0}
+                    {playerStats && playerStats.stats
+                      ? scoreFormat(playerStats.stats, 0)
+                      : 0}
                   </p>
                   <hr className=" bg-red-400" />
                 </div>
                 <hr
-                  className={`${gender === "girl"
-                    ? " h-1 bg-pink-400 m-4 "
-                    : "h-1 bg-blue-500 m-4"
-                    }`}
+                  className={`${
+                    gender === "girl"
+                      ? " h-1 bg-pink-400 m-4 "
+                      : "h-1 bg-blue-500 m-4"
+                  }`}
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="w-5/6 mx-auto justify rounded-md p-5 ">
+        <div className="w-full mx-auto justify rounded-md p-5 ">
           {/* style={carouselContainerStyle} */}
-          <Carousel
-            itemClass="react-multi-carousel-item"
-            partialVisible={false}
-            responsive={responsive}
-            swipeable={true}
-            draggable={true}
-            arrows={false}
-            showDots={true}
-            infinite={true}
-            keyBoardControl={true}
-            className="gd-carousel"
-            containerClass="carousel-container"
-            autoPlay={true}
-          >
-            {playerStats?.pastrecords ?
+
+          {/* {playerStats?.pastrecords ?
                 Object.keys(playerStats?.pastrecords).reverse().map((key) => {
                   const value = playerStats?.pastrecords[key];
                   // Render PlayerPastRecord component here with value and key
-                  return <Link href={`/scorecard?matchId=${key}`}><PlayerPastRecord value={value} id={key} key={key} gender={gender} /></Link>;
-                }) :<></>}
-              
-            
-          </Carousel>
+                  
+                  return <Link href={`/scorecard?matchId=${key}`}><PlayerPastRecord value={value} id={key} key={key} gender={gender}/></Link>;
+                }) :<></>} */}
+          {playerStats &&
+            playerStats.pastrecords &&
+            Object.keys(playerStats.pastrecords)
+              .reverse() // Reverse to show the latest editions first
+              .map((editionKey) => {
+                const matches = playerStats.pastrecords[editionKey];
+                return (
+                  <div className="w-full" key={editionKey}>
+                    <p className="font-extrabold w-full text-center underline-offset-2 text-2xl text-black mx-auto" >Edition {editionKey} Matches </p>
+                <Carousel
+                  itemClass="react-multi-carousel-item"
+                  partialVisible={false}
+                  responsive={responsive}
+                  swipeable={true}
+                  draggable={true}
+                  arrows={false}
+                  showDots={true}
+                  infinite={true}
+                  keyBoardControl={true}
+                  className="gd-carousel"
+                  containerClass="carousel-container"
+                  autoPlay={true}
+                >
+                  {Object.keys(matches)
+                    .reverse()
+                    .map((matchKey) => {
+                      const matchValue = matches[matchKey];
+                      return (
+                        <Link
+                        href={
+                          editionKey === '18'
+                            ? `/scorecard?matchId=${matchKey}`
+                            : `/pastscorecard?matchId=${matchKey}&edition=${editionKey}`
+                        }
+                          key={matchKey}
+                          className="w-full"
+                        >
+                          <PlayerPastRecord
+                            value={matchValue}
+                            id={matchKey}
+                            gender={gender}
+                            edition={editionKey}
+                          />
+                        </Link>
+                      );
+                    })}
+                </Carousel>
+                </div>);
+              })}
         </div>
       </div>
       <Footer />
