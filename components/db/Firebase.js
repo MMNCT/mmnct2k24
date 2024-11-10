@@ -20,6 +20,6 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const database = getDatabase(app);
 const dbRef = ref(getDatabase());
-const analytics = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
+// const analytics = isSupported().then((yes) => (yes ? getAnalytics(app) : null));
 
-export { db, storage, analytics, database, dbRef };
+export { db, storage, database, dbRef };
