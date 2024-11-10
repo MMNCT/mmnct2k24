@@ -101,7 +101,7 @@ export async function getServerSideProps(context) {
 }
 
 const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
   const [temp, settemp] = useState(true);
   const [loading, setLoading] = useState(false);
   const [newMember, setNewMember] = useState(false);
@@ -110,13 +110,13 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
   const [updateViceCaptain, setUpdateViceCaptain] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  useEffect(() => {
-    auth_users.map((user) => {
-      if (user.email === session?.user?.email) {
-        setValidated(true);
-      }
-    });
-  }, [session]);
+  // useEffect(() => {
+  //   auth_users.map((user) => {
+  //     if (user.email === session?.user?.email) {
+  //       setValidated(true);
+  //     }
+  //   });
+  // }, [session]);
 
   // const addNewMember = async (e) => {
   //   e.preventDefault();
@@ -367,32 +367,32 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     location.reload();
   };
 
-  if (!session) {
-    return (
-      <div className="h-screen w-screen flex flex-col space-y-4 items-center justify-center">
-        <p>You need to sign in to access this page!</p>
-        <button
-          className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-          onClick={() => {
-            signIn("google");
-          }}
-        >
-          Sign in
-        </button>
-      </div>
-    );
-  }
+  // if (!session) {
+  //   return (
+  //     <div className="h-screen w-screen flex flex-col space-y-4 items-center justify-center">
+  //       <p>You need to sign in to access this page!</p>
+  //       <button
+  //         className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
+  //         onClick={() => {
+  //           signIn("google");
+  //         }}
+  //       >
+  //         Sign in
+  //       </button>
+  //     </div>
+  //   );
+  // }
 
-  if (
-    !validated &&
-    teams[teamDetails.teamName]?.capt_email !== session.user.email
-  ) {
-    return (
-      <div className="h-screen w-screen flex flex-col space-y-4 items-center justify-center">
-        Sorry, you are not authorised to access this page!
-      </div>
-    );
-  }
+  // if (
+  //   !validated &&
+  //   teams[teamDetails.teamName]?.capt_email !== session.user.email
+  // ) {
+  //   return (
+  //     <div className="h-screen w-screen flex flex-col space-y-4 items-center justify-center">
+  //       Sorry, you are not authorised to access this page!
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
