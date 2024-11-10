@@ -459,7 +459,7 @@ export default function Stars({ playerStats }) {
       const maleData = [];
       const femaleData = [];
       const querySnapshot = await getDocs(query(collection(db, "teamMembers")));
-      querySnapshot.forEach((doc) => {
+      for (const doc of querySnapshot.docs) {
         const data = { id: doc.id, ...doc.data() };
         if (data.teamId.hasOwnProperty("18")) {
           if (getGender(data.teamId[edition]) === "male") {
@@ -468,9 +468,11 @@ export default function Stars({ playerStats }) {
             femaleData.push(data);
           }
         }
-      });
-      setmalePlayers(maleData);
+      }
       setfemalePlayers(femaleData);
+      setmalePlayers(maleData);
+      // console.log(maleData);
+      // console.log(femaleData);
     };
     
 
