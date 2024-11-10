@@ -8,7 +8,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { db, storage } from "./db/Firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, updateDoc } from "firebase/firestore";
 
 export default function UpdatePlayerModal({ details }) {
   const [showModal, setShowModal] = React.useState(false);
@@ -133,8 +133,7 @@ export default function UpdatePlayerModal({ details }) {
       );
     }
 
-    await setDoc(doc(db, "teamMembers", details.id), {
-      teamId: details.teamId,
+    await updateDoc(doc(db, "teamMembers", details.id), {
       name: playerName,
       type: playerType,
       imgUrl: details.imgUrl,
