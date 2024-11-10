@@ -822,10 +822,10 @@ function calculateMenBonus(team1TotalScore, team2TotalScore, team1TotalBalls, te
   //const rate = (team1runs * 6) / assumedteam1TotalBalls - (team2runs * 6) / assumedteam2TotalBalls;
   const rate1=(team1runs * 6) / assumedteam1TotalBalls;
   const rate2=(team2runs * 6) / assumedteam2TotalBalls;
-  if(rate1>1.25*rate2){
+  if(rate1>=1.25*rate2){
     return 1;
   }
-  if(rate2>1.25*rate1){
+  if(rate2>=1.25*rate1){
     return 2;
   }
     console.log("rates " + rate1+" "+rate2);
@@ -843,10 +843,10 @@ function calculateWomenBonus(team1TotalScore, team2TotalScore, team1TotalBalls, 
   //const rate = (team1runs * 6) / assumedteam1TotalBalls - (team2runs * 6) / assumedteam2TotalBalls;
   const rate1=(team1runs * 6) / assumedteam1TotalBalls;
   const rate2=(team2runs * 6) / assumedteam2TotalBalls;
-  if(rate1>1.25*rate2){
+  if(rate1>=1.25*rate2){
     return 1;
   }
-  if(rate2>1.25*rate1){
+  if(rate2>=1.25*rate1){
     return 2;
   }
   //console.log("rates " + rate1+" "+rate2);

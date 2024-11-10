@@ -4,6 +4,7 @@ import Head from "next/head";
 import Navbar from "../../../components/Navbar";
 import Footer from "../../../components/Footer";
 import { db } from "../../../components/db/Firebase";
+import Link from "next/link";
 import {
   collection,
   doc,
@@ -169,7 +170,8 @@ function teamDetails({ teamDetails, members }) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-4 md:mx-16 gap-6">
               {members.map((member, index) => (
-                <div className="relative" key={index}>
+                <Link href={`/player-details/${member.id}`} key={index} >
+                <div className="relative" >
                   <Image
                     src={
                       member.imgUrl != ""
@@ -200,6 +202,7 @@ function teamDetails({ teamDetails, members }) {
                     )}
                   </div>
                 </div>
+                </Link>
               ))}
             </div>
           </div>
