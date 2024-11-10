@@ -193,25 +193,32 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     const querySnapshot = await getDocs(
       query(collection(db, "teamMembers"), where("roll_no", "==", roll_no.toLowerCase()))
     );
-
     if (!querySnapshot.empty) {
-      // Player with the given roll_no exists, update their teamId
-      querySnapshot.forEach(async (doc) => {
+      console.log("inside if");
+    
+      // Use a for...of loop to handle async/await properly
+      for (const doc of querySnapshot.docs) {
         const existingData = doc.data();
+        console.log("existing data", existingData);
+    
         const updatedTeamId = {
           ...existingData.teamId,
           [edition]: teamDetails.id, // Add or update the teamId for the specific edition
         };
-          // console.log(existingData.id);
+    
+        console.log("Updating document...");
         await updateDoc(doc.ref, {
           teamId: updatedTeamId,
           imgUrl: downloadURL,
           type: playerType,
         });
-        // console.log(doc.data());
-      });
-      alert("Player's team ID updated successfully");
-    } else {
+        console.log("Document updated successfully");
+      }
+    
+      // This line will now run only after all documents are processed
+      console.log("Player's team ID updated successfully");
+    }
+    else {
       // Player with the given roll_no does not exist, add new player
       await addDoc(collection(db, "teamMembers"), {
         teamId: {
@@ -229,7 +236,7 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
       alert("Player added successfully");
     }
 
-    location.reload();
+    // location.reload();
   };
 
   const deletePlayer = async (details) => {
