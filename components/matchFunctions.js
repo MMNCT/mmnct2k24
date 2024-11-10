@@ -879,7 +879,7 @@ const updateManOfTheMatch = async (matchID, playerName) => {
 };
 const updateToss = async (matchID, winner, choice) => {
 
-  await update(ref(database, "match/" + matchID), {
+  await update(ref(database, "matchDetail/" + matchID), {
     "toss": winner,
     "decision": choice
   }).then(() => {
