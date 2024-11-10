@@ -4,7 +4,7 @@ const teams = {
     themeColor: "#1f1f1f",
     teamCode: "IMR",
     teamType : "M.Sc",
-    capt_email : "ajeet9565555805@gmail.com",
+    capt_email : "rajkumarshah293@gmail.com",
     teamId : "3nVboHn1vV0rXioSIvFt",
     teamCategory : "male"
   },
@@ -40,7 +40,7 @@ const teams = {
     themeColor: "#33376a",
     teamCode: "VNG",
     teamType : "B. Tech III-A",
-    capt_email : "",
+    capt_email : "shubhamkumarsingh424@gmail.com",
     teamId : "Do2Yp9S41x0NS74haGzc",
     teamCategory : "male"
   },
@@ -49,7 +49,7 @@ const teams = {
     themeColor: "#663f7a",
     teamCode: "HRC",
     teamType : "B. Tech III-B",
-    capt_email : "anujsarvesh99@gmail.com",
+    capt_email : "omofficial799@gmail.com",
     teamId : "GXuxH7N5UKKeghUbHMF5",
     teamCategory : "male"
   },
@@ -69,7 +69,7 @@ const teams = {
     teamType : "B. Tech IV-B",
     teamId : "JUbEN3BRZpOhIYVGSLRy",
     teamCategory : "male",
-    capt_email : "sumitjaiswal00077@gmail.com"
+    capt_email : "kethavathsrikanth33@gmail.com"
   },
   SPARTANS: {
     teamLogo: "https://firebasestorage.googleapis.com/v0/b/mmnct-fac3f.appspot.com/o/teams_logo%2FSPARTANS.jpg?alt=media&token=1e3a7260-4b78-4575-98ed-68c9d423cbd6",
@@ -103,7 +103,7 @@ const teams = {
     themeColor: "#7f1d1c",
     teamCode: "ASR",
     teamType : "M. Tech II",
-    capt_email : "peeyushsemwal16@gmail.com",
+    capt_email : "Kumarsaket609@gmail.com",
     teamId : "XzU3FlhqMTeDAilclCC7",
     teamCategory : "male"
   },
@@ -121,7 +121,7 @@ const teams = {
     themeColor: "#a33a0f",
     teamCode: "VIK",
     teamType : "B. Tech II-A",
-    capt_email : "shubhamkumarsingh424@gmail.com",
+    capt_email : "amiteshkumarsingh123@gmail.com",
     teamId : "ehCGojuhAdZH5xiRUi0U",
     teamCategory : "male"
   },
@@ -139,7 +139,7 @@ const teams = {
     themeColor: "#ed4447",
     teamCode: "AMO",
     teamType : "M. Tech I",
-    capt_email : "p23is011@coed.svnit.ac.in",
+    capt_email : "parthpatel8375@gmail.com",
     teamId : "u7N3G75tw3PZ5CVFY5tz",
     teamCategory : "male"
   },
