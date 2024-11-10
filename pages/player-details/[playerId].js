@@ -257,8 +257,8 @@ const PlayerDetails = () => {
           <div className="w-fit mx-auto flex justify-center  p-4 flex-col md:flex-row  gap-10 border-none  ">
             <Image
               src={
-                playerStats.imgUrl !== ""
-                  ? playerStats.imgUrl
+                playerStats?.imgUrl !== ""
+                  ? playerStats?.imgUrl
                   : gender == "boy"
                   ? "/male.jpg"
                   : "/female.jpg"
@@ -307,7 +307,7 @@ const PlayerDetails = () => {
               <p className=" flex  text-lg font-bold text-center md:text-left lg:text-left md:mt-4 justify-center md:justify-start lg:justify-start mt-2">
                 {/* Role :{" "} */}
                 {/* <TbCricket className=" text-lg mx-2 font-medium h-[30px] w-[20px]" />{" "} */}
-                {playerStats.role}
+                {playerStats?.role}
                 {/* {Role} */}
               </p>
             </div>
