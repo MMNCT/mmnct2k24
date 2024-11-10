@@ -101,7 +101,6 @@ export default function Stars({ playerStats }) {
   const [top5femalehighestbatsman, setTop5femalehighestbatsman] = useState([]);
   const [top5maletutktukbatsman, setTop5maletuktukbatsman] = useState([]);
   const [top5femaletuktukbatsman, setTop5femaletuktukbatsman] = useState([]);
-
   const getGender = (teamid) => {
     let result;
     for (const val in teams) {
@@ -474,6 +473,7 @@ export default function Stars({ playerStats }) {
       setfemalePlayers(femaleData);
     };
     
+
     getData();
   }, []);
 
@@ -514,7 +514,7 @@ export default function Stars({ playerStats }) {
 
     return finalDecision;
   }
-  const initialRuns = getPlayerScored(top5femalebatsman[0]?.stats[edition]);
+ 
   return (
     <div>
       <Head>
