@@ -78,7 +78,7 @@ const teams = {
     teamType : "B. Tech IV-A",
     teamId : "ObsrfbZ2MBD1hIxsMFFb",
     teamCategory : "male",
-    capt_email : "karansav1212@gmail.com"
+    capt_email : "shanigupta120103@gmail.com"
   },
   'KNIGHT TEMPLARS': {
     teamLogo: "https://firebasestorage.googleapis.com/v0/b/mmnct-fac3f.appspot.com/o/teams_logo%2FKNIGHT%20TEMPLERS.jpg?alt=media&token=d7db1968-577e-448c-88f5-15ad4e1406ca",
