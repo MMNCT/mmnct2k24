@@ -190,33 +190,36 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
     }
 
     // Check if a player with the given roll_no already exists
-    const querySnapshot = await getDocs(
-      query(collection(db, "teamMembers"), where("roll_no", "==", roll_no.toLowerCase()))
-    );
-    if (!querySnapshot.empty) {
-      // console.log("inside if");
-    
-      // Use a for...of loop to handle async/await properly
-      for (const doc of querySnapshot.docs) {
-        const existingData = doc.data();
-        // console.log("existing data", existingData);
-    
-        const updatedTeamId = {
-          ...existingData.teamId,
-          [edition]: teamDetails.id, // Add or update the teamId for the specific edition
-        };
-    
-        // console.log("Updating document...");
-        await updateDoc(doc.ref, {
-          teamId: updatedTeamId,
-          imgUrl: downloadURL,
-          type: playerType,
-        });
-        // console.log("Document updated successfully");
+    if(roll_no!="")
+    {
+      const querySnapshot = await getDocs(
+        query(collection(db, "teamMembers"), where("roll_no", "==", roll_no.toLowerCase()))
+      );
+      if (!querySnapshot.empty) {
+        // console.log("inside if");
+      
+        // Use a for...of loop to handle async/await properly
+        for (const doc of querySnapshot.docs) {
+          const existingData = doc.data();
+          // console.log("existing data", existingData);
+      
+          const updatedTeamId = {
+            ...existingData.teamId,
+            [edition]: teamDetails.id, // Add or update the teamId for the specific edition
+          };
+      
+          // console.log("Updating document...");
+          await updateDoc(doc.ref, {
+            teamId: updatedTeamId,
+            imgUrl: downloadURL,
+            type: playerType,
+          });
+          // console.log("Document updated successfully");
+        }
+      
+        // This line will now run only after all documents are processed
+        alert("Player's team ID updated successfully");
       }
-    
-      // This line will now run only after all documents are processed
-      alert("Player's team ID updated successfully");
     }
     else {
       // Player with the given roll_no does not exist, add new player
