@@ -58,7 +58,7 @@ const teams = {
     themeColor: "#e02636",
     teamCode: "VAL",
     teamType : "M.Tech & Phd",
-    capt_email : "d21ce003@ced.svnit.ac.in",
+    capt_email : "nafisa30101997@gmail.com",
     teamId : "HT7MP2wV6atHS5nWUI17",
     teamCategory : "female"
   },
@@ -159,7 +159,7 @@ const teams = {
     teamType : "B. Tech I-A",
     teamId : "xb1iULxkTFD2TCzAEoia",
     teamCategory : "male",
-    capt_email : "rishiharikota123@gmail.com"
+    capt_email : "urwrong5253@gmail.com"
   },
   AMAZONS: {
     teamLogo: "https://firebasestorage.googleapis.com/v0/b/mmnct-fac3f.appspot.com/o/teams_logo%2FAMAZONS.jpg?alt=media&token=77a579de-864c-4c9f-aa7c-3e202110cf19",
@@ -175,7 +175,7 @@ const teams = {
     themeColor: "#1fb66f",
     teamCode: "AKK",
     teamType : "B. Tech I-B",
-    capt_email : "u23ee010@eed.svnit.ac.in",
+    capt_email : "ayush02005@gmail.com",
     teamId : "zU6iWGJgRbB1W4vmPnw5",
     teamCategory : "male"
   },
