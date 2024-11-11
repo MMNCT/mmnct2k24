@@ -220,6 +220,24 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
         // This line will now run only after all documents are processed
         alert("Player's team ID updated successfully");
       }
+      else {
+        // Player with the given roll_no does not exist, add new player
+        await addDoc(collection(db, "teamMembers"), {
+          teamId: {
+            [edition]: teamDetails.id, // Set initial teamId with the current edition
+          },
+          name: playerName,
+          type: playerType,
+          imgUrl: downloadURL,
+          branch: playerBranch,
+          roll_no: roll_no.toLowerCase(),
+          edition: edition,
+          role: role,
+        });
+        console.log("New Player Added");
+        alert("Player added successfully");
+      }
+  
     }
     else {
       // Player with the given roll_no does not exist, add new player
