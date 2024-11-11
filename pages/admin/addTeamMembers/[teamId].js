@@ -110,13 +110,13 @@ const teamId = ({ teamDetails, members, captain, viceCaptain, auth_users }) => {
   const [updateViceCaptain, setUpdateViceCaptain] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  // useEffect(() => {
-  //   auth_users.map((user) => {
-  //     if (user.email === session?.user?.email) {
-  //       setValidated(true);
-  //     }
-  //   });
-  // }, [session]);
+  useEffect(() => {
+    auth_users.map((user) => {
+      if (user.email === session?.user?.email) {
+        setValidated(true);
+      }
+    });
+  }, [session]);
 
   // const addNewMember = async (e) => {
   //   e.preventDefault();
