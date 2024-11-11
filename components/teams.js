@@ -94,7 +94,7 @@ const teams = {
     themeColor: "#bb2473",
     teamCode: "ATH",
     teamType : "B. Tech III",
-    capt_email : "pragvip@gmail.com",
+    capt_email : "apekshitaverma5@gmail.com",
     teamId : "XXsDGosl4eV5zxbJs1ue",
     teamCategory : "female"
   },
@@ -166,7 +166,7 @@ const teams = {
     themeColor: "#334e6b",
     teamCode: "AMZ",
     teamType : "B. Tech IV",
-    capt_email : "apekshitaverma5@gmail.com",
+    capt_email : "shuklapratima2709@gmail.com",
     teamId : "ydK5fqL5SofiJ1zA4AIZ",
     teamCategory : "female"
   },
