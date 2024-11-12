@@ -21,9 +21,6 @@ const Teamcard = (props) => {
         <div className="text-gray-500 text-sm text-center pb-4">
           <p className="font-semibold">{props.details.branch}</p>
           <p className="pt-4">{props.details.year}</p>
-          {props.details.position === "coordinator" && (
-            <p>Phone No.- {props.details.mob_number}</p>
-          )}
         </div>
       </div>
       {(props.details.linkedin != "" ||
