@@ -123,7 +123,7 @@ export default function Organisers({
             alt="loading"
           />
         )}
-        <div className="grid gap-2 lg:grid-cols-1 justify-items-center place-items-center ">
+        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
           {developers.length != 0 &&
             developers.map((developer, index) => {
               return <Teamcard details={developer} key={index} />;
@@ -142,7 +142,7 @@ export default function Organisers({
             alt="loading"
           />
         )}
-        <div className="grid gap-2 lg:grid-cols-1 justify-items-center place-items-center ">
+        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
           {in_house.length != 0 &&
             in_house.map((person, index) => {
               return <Teamcard details={person} key={index} />;
@@ -180,14 +180,14 @@ export default function Organisers({
             alt="loading"
           />
         )}
-        <div className="grid gap-2 lg:grid-cols-1 justify-items-center place-items-center ">
+        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
           {designers.length != 0 &&
             designers.map((designer, index) => {
               return <Teamcard details={designer} key={index} />;
             })}
         </div>
       </div>
-      <div className="text-center mt-28 mb-10">
+      {/* <div className="text-center mt-28 mb-10">
         <h1 className="text-3xl font-semibold mb-2">Sponsorship</h1>
         <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-3/12 mx-auto mb-4 lg:mb-8"></div>
         {sponsorship.length == 0 && (
@@ -199,13 +199,13 @@ export default function Organisers({
             alt="loading"
           />
         )}
-        <div className="grid gap-2 lg:grid-cols-1 justify-items-center place-items-center ">
+        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
           {sponsorship.length != 0 &&
             sponsorship.map((sponsor, index) => {
               return <Teamcard details={sponsor} key={index} />;
             })}
         </div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   );
