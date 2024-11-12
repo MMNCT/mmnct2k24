@@ -209,7 +209,7 @@ const questions = [
   },
   {
     q: "When will the Contest Start?",
-    a: "The contest begins on October 26, 2023, and ends on October 29, 2023.",
+    a: "The contest begins on November 14, 2024, and ends on November 17, 2024.",
   },
   {
     q: "How will the winner be decided?",
