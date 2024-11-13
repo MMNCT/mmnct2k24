@@ -187,7 +187,7 @@ export default function Organisers({
             })}
         </div>
       </div>
-      {/* <div className="text-center mt-28 mb-10">
+      <div className="text-center mt-28 mb-10">
         <h1 className="text-3xl font-semibold mb-2">Sponsorship</h1>
         <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-3/12 mx-auto mb-4 lg:mb-8"></div>
         {sponsorship.length == 0 && (
@@ -205,7 +205,7 @@ export default function Organisers({
               return <Teamcard details={sponsor} key={index} />;
             })}
         </div>
-      </div> */}
+      </div>
       <Footer />
     </div>
   );

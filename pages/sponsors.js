@@ -13,26 +13,18 @@ import Image from "next/image";
 import TournamentDetails from "../components/TournamentDetails";
 
 const contact_persons = [
+
   {
-    name: "Anupam Kumar",
-    position: "Advisor, MMNCT",
-    contact: "917463926104",
-  },
-  {
-    name: "Ayushman",
-    position: "Advisor, MMNCT",
-    contact: "916202561409",
+    name: "Ravi Raj",
+    position: "Lead Organiser, MMNCT",
+    contact: "918210337043",
   },
   {
     name: "Pryanshu Kumar",
     position: "Sponsorhip Head, MMNCT",
     contact: "917903310330",
-  },
-  {
-    name: "Ravi Raj",
-    position: "Coordinator, MMNCT",
-    contact: "918210337043",
   }
+ 
 ];
 
 // Next js server side props for fetching sponsorship data from firebase
