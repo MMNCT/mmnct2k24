@@ -156,7 +156,7 @@ const teams = {
     teamLogo: "https://firebasestorage.googleapis.com/v0/b/mmnct-fac3f.appspot.com/o/teams_logo%2FSUMERIANS.jpg?alt=media&token=58a4875b-905d-42dd-83cc-a319b12aa299",
     themeColor: "#1d6454",
     teamCode: "SUM",
-    teamType : "B. Tech I-A",
+    teamType : "B. Tech I-B",
     teamId : "xb1iULxkTFD2TCzAEoia",
     teamCategory : "male",
     capt_email : "urwrong5253@gmail.com"
@@ -174,7 +174,7 @@ const teams = {
     teamLogo: "https://firebasestorage.googleapis.com/v0/b/mmnct-fac3f.appspot.com/o/teams_logo%2FAKKADIANS.jpg?alt=media&token=114dfffe-de04-46cd-9b92-602be19cbf19",
     themeColor: "#1fb66f",
     teamCode: "AKK",
-    teamType : "B. Tech I-B",
+    teamType : "B. Tech I-A",
     capt_email : "ayush02005@gmail.com",
     teamId : "zU6iWGJgRbB1W4vmPnw5",
     teamCategory : "male"
