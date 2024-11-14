@@ -996,7 +996,7 @@ const Scorecard = () => {
               <p className="text-[#7F7F7F] text-md sm:text-2xl not-italic font-normal leading-[normal]">
                 {" "}
                 {/* match detail */}
-                MMNCT 2023 | Match<span> {matchData && matchData.id}</span>
+                MMNCT 2024 | Match<span> {matchData && matchData.id}</span>
               </p>
             </div>
             <hr className=" h-1 border bg-blue-700 border-none my-4 w-[80%] mx-auto" />
