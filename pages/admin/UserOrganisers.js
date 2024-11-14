@@ -24,8 +24,9 @@ const UserOrganisersForm = () => {
     "Developer",
     "Designer",
     "Content Writer",
-    "Infra and In-house",
-    "Sponserships",
+    "Infra and In-House",
+    "sponsorship",
+    "scorer"
   ];
   const [imagePreview, setImagePreview] = useState(null);
 

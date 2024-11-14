@@ -23,6 +23,18 @@ export async function getServerSideProps() {
   let in_house = [];
   let president = [];
   let sponsorship=[];
+  let scorers=[];
+  querySnapshot.forEach((doc) => {
+    let data = doc.data();
+     if (data.position == "lead developer") {
+      developers.push(data);
+    } else if (data.position == "lead designer") {
+      designers.push(data);
+    } 
+     else if (data.position == "lead Infra and In-House") {
+      in_house.push(data);
+    }
+  });
   querySnapshot.forEach((doc) => {
     let data = doc.data();
     if (data.position == "president") {
@@ -41,8 +53,11 @@ export async function getServerSideProps() {
     else if (data.position == "sponsorship") {
       sponsorship.push(data);
     }
+    else if(data.position == "scorer")
+    {
+     scorers.push(data);
+    }
   });
-  president = president.reverse()
   return {
     props: {
       president,
@@ -51,7 +66,8 @@ export async function getServerSideProps() {
       developers,
       content_creators,
       in_house,
-      sponsorship
+      sponsorship,
+      scorers
     },
   };
 }
@@ -63,7 +79,8 @@ export default function Organisers({
   developers,
   content_creators,
   in_house,
-  sponsorship
+  sponsorship,
+  scorers
 }) {
   // console.log(sponsorship);
   return (
@@ -85,7 +102,7 @@ export default function Organisers({
             alt="loading"
           />
         )}
-        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
+        <div className={`grid gap-2 ${president.length> 1 ? "lg:grid-cols-2":"lg:grid-cols-1"} justify-items-center place-items-center `}>
           {president.length != 0 &&
             president.map((president, index) => {
               return <Teamcard details={president} key={index} />;
@@ -152,25 +169,6 @@ export default function Organisers({
       <div className="text-center mt-28 mb-10">
         <h1 className="text-3xl font-semibold mb-2">Content</h1>
         <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-2/12 mx-auto mb-4 lg:mb-8"></div>
-        {content_creators.length == 0 && (
-          <Image
-            src="/loader.gif"
-            width={330}
-            height={400}
-            className="w-full md:w-2/5 md:mx-auto md:rounded-xl"
-            alt="loading"
-          />
-        )}
-        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
-          {content_creators.length != 0 &&
-            content_creators.map((content_creator, index) => {
-              return <Teamcard details={content_creator} key={index} />;
-            })}
-        </div>
-      </div>
-      <div className="text-center mt-28 mb-10">
-        <h1 className="text-3xl font-semibold mb-2">Designers</h1>
-        <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-3/12 mx-auto mb-4 lg:mb-8"></div>
         {designers.length == 0 && (
           <Image
             src="/loader.gif"
@@ -184,6 +182,44 @@ export default function Organisers({
           {designers.length != 0 &&
             designers.map((designer, index) => {
               return <Teamcard details={designer} key={index} />;
+            })}
+        </div>
+      </div>
+      <div className="text-center mt-28 mb-10">
+        <h1 className="text-3xl font-semibold mb-2">Scoring Team</h1>
+        <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-3/12 mx-auto mb-4 lg:mb-8"></div>
+        {scorers.length == 0 && (
+          <Image
+            src="/loader.gif"
+            width={330}
+            height={400}
+            className="w-full md:w-2/5 md:mx-auto md:rounded-xl"
+            alt="loading"
+          />
+        )}
+        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
+          {scorers.length != 0 &&
+            scorers.map((scorer, index) => {
+              return <Teamcard details={scorer} key={index} />;
+            })}
+        </div>
+      </div>
+      <div className="text-center mt-28 mb-10">
+        <h1 className="text-3xl font-semibold mb-2">Content</h1>
+        <div className="border-b-4 border-[#F4A68D] w-9/12 md:w-2/5 lg:w-2/12 mx-auto mb-4 lg:mb-8"></div>
+        {content_creators.length == 0 && (
+          <Image
+            src="/loader.gif"
+            width={330}
+            height={400}
+            className="w-full md:w-2/5 md:mx-auto md:rounded-xl"
+            alt="loading"
+          />
+        )}
+        <div className="grid gap-2 lg:grid-cols-2 justify-items-center place-items-center ">
+          {content_creators.length != 0 &&
+            content_creators.map((content_creator, index) => {
+              return <Teamcard details={content_creator} key={index} />;
             })}
         </div>
       </div>
