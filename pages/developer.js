@@ -19,8 +19,20 @@ export async function getServerSideProps() {
   
   querySnapshot.forEach((doc) => {
     let data = doc.data();
+    if (data.position == "lead developer" && data.edition == "18" ) {
+      developers.push(data);
+    }
+  });
+  querySnapshot.forEach((doc) => {
+    let data = doc.data();
     if (data.position == "developer" && data.edition == "18" ) {
       developers.push(data);
+    }
+  });
+  querySnapshot.forEach((doc) => {
+    let data = doc.data();
+    if (data.position == "lead developer" && data.edition == "17" ) {
+      _17thEditionDevelopers.push(data);
     }
   });
   querySnapshot.forEach((doc) => {
