@@ -107,8 +107,9 @@ export default function PointsTable({ maleTable, femaleTable }) {
   
     const avgRunRateA = calculateAverage(teamARunRate);
     const avgRunRateB = calculateAverage(teamBRunRate);
-  
-    return avgRunRateB - avgRunRateA;
+    const netRunRateA =teamA.totalRunsScored > 0 ?( (teamA.totalRunsScored*6/teamA.totalBallsPlayed)-(teamA.totalRunsScoredAgainst*6/teamA.totalBallsBowled)).toFixed(2) : "0.00";
+    const netRunRateB =teamB.totalRunsScored > 0 ?( (teamB.totalRunsScored*6/teamB.totalBallsPlayed)-(teamB.totalRunsScoredAgainst*6/teamB.totalBallsBowled)).toFixed(2) : "0.00";
+    return netRunRateB - netRunRateA;
   });
   
   const sortedFemaleTable = femaleTable.sort((teamA, teamB) => {
@@ -126,10 +127,9 @@ export default function PointsTable({ maleTable, femaleTable }) {
       return positiveTermsB - positiveTermsA;
     }
   
-    const avgRunRateA = calculateAverage(teamARunRate);
-    const avgRunRateB = calculateAverage(teamBRunRate);
-  
-    return avgRunRateB - avgRunRateA;
+    const netRunRateA =teamA.totalRunsScored > 0 ?( (teamA.totalRunsScored*6/teamA.totalBallsPlayed)-(teamA.totalRunsScoredAgainst*6/teamA.totalBallsBowled)).toFixed(2) : "0.00";
+    const netRunRateB =teamB.totalRunsScored > 0 ?( (teamB.totalRunsScored*6/teamB.totalBallsPlayed)-(teamB.totalRunsScoredAgainst*6/teamB.totalBallsBowled)).toFixed(2) : "0.00";
+    return netRunRateB - netRunRateA;
   });
   
   // Function to calculate the average of an array
