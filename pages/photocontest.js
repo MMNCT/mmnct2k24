@@ -367,7 +367,7 @@ const photocontest = ({ posts, winners }) => {
             </div>
           </div>
         </div>
-        {/* {posts.length > 0 ? (
+        {posts.length > 0 ? (
           <>
             <p className="mt-14 lg:mt-0 text-center text-2xl font-semibold text-[#411F0D]">
               Today's most liked Posts
@@ -397,8 +397,8 @@ const photocontest = ({ posts, winners }) => {
               Be the first one to upload your memory.
             </p>
           </>
-        )} */}
-        {/* {winners.length > 0 && (
+        )}
+        {winners.length > 0 && (
           <div>
             <p className="mt-14 lg:mt-5 text-center text-2xl font-semibold text-[#411F0D]">
               Winners of the Contest
@@ -432,7 +432,7 @@ const photocontest = ({ posts, winners }) => {
               ))}
             </div>
           </div>
-        )} */}
+        )}
       </div>
       <Footer />
     </div>

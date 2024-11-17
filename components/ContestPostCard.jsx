@@ -3,13 +3,14 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { FcLike } from "react-icons/fc";
 import Image from "next/image";
 import moment from "moment";
-import { updateDoc, doc, setDoc, deleteDoc } from "firebase/firestore";
+import { updateDoc, doc, setDoc, deleteDoc,collection, addDoc, query, getDocs, where } from "firebase/firestore";
 import { db } from "../components/db/Firebase";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 const ContestPostCard = ({ post }) => {
   const { data: session } = useSession();
+  console.log(session);
   const [loading, setLoading] = useState(false);
   // Function to like or unlike the post
   const likePost = async (post) => {
@@ -23,6 +24,21 @@ const ContestPostCard = ({ post }) => {
     setLoading(true);
 
     // Increment the likes if the user has not liked the post else decrement the likes
+    // session?.user?.email\
+    post.liked=false;
+    if (session) {
+      const q = query(
+        collection(db, "photocontest-likes"),
+        where("googleId", "==", session.user.email)
+      );
+      const querySnapshot = await getDocs(q);
+      const likes = querySnapshot.docs.map((doc) => doc.data());
+  
+      // Store the post likes in posts
+     
+        post.liked = likes.some((like) => like.postId === post.id);
+      
+    }
     if (post.liked) {
       await updateDoc(doc(db, "photocontest", id), {
         likes: post.likes - 1,
