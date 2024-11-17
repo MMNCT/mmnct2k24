@@ -22,7 +22,7 @@ function HomePage({ teamlist }) {
 
   useEffect(() => {
     setScreenSize(window.innerWidth);
-    setWinnerTeamList(() => decideWinner("VIK", "PAR", teamlist));
+    setWinnerTeamList(() => decideWinner("IMR", "SAM", teamlist));
   }, []);
 
   return (
@@ -42,7 +42,7 @@ function HomePage({ teamlist }) {
           </p>
           
         </div>
-        {/* <WinnersAnnouncement teamlist={winnerTeamList} /> */}
+        <WinnersAnnouncement winners={winnerTeamList} />
 
         <p className="font-[800] text-[24px] md:text-[32px] md:leading-[29.26px] 
         ">
@@ -57,7 +57,7 @@ function HomePage({ teamlist }) {
         {/* graphic and venue along with days to go */}
 
         <div>
-          <HomeCard />
+          {/* <HomeCard /> */}
           {/* {(new Date().getDate() === 25 && new Date().getMonth()===9 && new Date().getFullYear() === 2023 )?<>
             <div className=" flex justify-center items-center w-4/5 md:w-[400px] days-counter mx-auto md:mx-0 md:mb-4 md:gap-4 h-[116px] md:h-[150px]">
             <div className="text-[#991746]">
@@ -136,23 +136,23 @@ function daysCaluclator() {
 
 // this component is hard coded and is used only for announcing who won
 
-const WinnersAnnouncement = ({ teamlist }) => {
+const WinnersAnnouncement = ({ winners }) => {
   const winnerTabStyle =
-    "flex items-center justify-evenly w-full md:w-2/3 lg:w-1/3 text-center my-2 py-2 rounded-md shadow-md text-2xl button";
-
+    "flex items-center justify-evenly w-full md:w-2/3 md:mx-auto lg:w-1/3 text-center my-2 py-2 rounded-md shadow-md text-2xl ";
   const winnerStyle = "font-bold font-3xl";
 
-  //console.log(teamlist);
-
-  if (teamlist.length === 0) {
-    return <div>loading...</div>;
+  if (winners.length === 0) {
+    return <div className="mx-auto">loading...</div>;
   } else {
     return (
-      <div className="flex flex-col lg:flex-row justify-evenly mt-5">
-        <div className={"bg-[#a33a0f] " + winnerTabStyle}>
+      <div className="flex flex-col w-full lg:flex-row justify-evenly py-10">
+        <div
+          style={{ backgroundColor: winners[0].themeColor }}
+          className={`border-2 ${winnerTabStyle}`}
+        >
           <div className="flex-shrink-0 h-14 w-14">
             <Image
-              src={teamlist[0].teamLogo}
+              src={winners[0].teamLogo}
               height={130}
               width={130}
               alt="MMNCT 2023 men's winner team logo"
@@ -160,14 +160,17 @@ const WinnersAnnouncement = ({ teamlist }) => {
           </div>
           <div>
             <p>Mens' Winner</p>
-            <p className={winnerStyle}>{teamlist[0].teamName}</p>
-            <p className="text-sm">{teamlist[0].teamType}</p>
+            <p className={winnerStyle}>{winners[0].teamName}</p>
+            <p className="text-sm font-bold">{winners[0].teamType}</p>
           </div>
         </div>
-        <div className={"bg-[#2dda98] " + winnerTabStyle}>
+        <div
+          style={{ backgroundColor: winners[1].themeColor }}
+          className={`border-2 ${winnerTabStyle}`}
+        >
           <div className="flex-shrink-0 h-14 w-14">
             <Image
-              src={teamlist[1].teamLogo}
+              src={winners[1].teamLogo}
               height={130}
               width={130}
               alt="MMNCT 2023 women's winner team logo"
@@ -175,8 +178,8 @@ const WinnersAnnouncement = ({ teamlist }) => {
           </div>
           <div>
             <p>Womens' Winner</p>
-            <p className={winnerStyle}>{teamlist[1].teamName}</p>
-            <p className="text-sm">{teamlist[1].teamType}</p>
+            <p className={winnerStyle}>{winners[1].teamName}</p>
+            <p className="text-sm font-bold">{winners[1].teamType}</p>
           </div>
         </div>
       </div>
