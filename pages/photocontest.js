@@ -198,7 +198,7 @@ const photocontest = ({ posts, winners }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      {imageUrl && selectedImage && (
+      {/* {imageUrl && selectedImage && (
         <div className="z-50 fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white mt-4 w-11/12 md:w-2/3 lg:w-8/12 max-h-full rounded-b-xl shadow-lg overflow-auto animate-scale-in-center">
             <div className="flex flex-col lg:flex-row items-center justify-center gap-x-4 lg:pr-4">
@@ -280,7 +280,7 @@ const photocontest = ({ posts, winners }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
       <div className="min-h-screen pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <Image
@@ -295,16 +295,16 @@ const photocontest = ({ posts, winners }) => {
                 Hola {session ? session.user.name.split(" ")[0] : "Amigos"}!
               </p>
               <div className="text-xl md:text-2xl pt-4 lg:pt-8 font-light">
-                <p>
+                {/* <p>
                   Explore the wonderful pictures clicked by people and don't
                   forget to like them.
-                </p>
-               {/* <p className="font-normal pb-2">Thank you for participating!</p>
+                </p> */}
+               <p className="font-normal pb-2">Thank you for participating!</p>
                 <p className="text-lg md:text-xl ">
                   We are excited to announce the winners of the contest.
-                </p> */}
+                </p>
               </div>
-              <input
+              {/* <input
                 accept="image/*"
                 type="file"
                 id="select-image"
@@ -315,8 +315,8 @@ const photocontest = ({ posts, winners }) => {
                   //Reset the input
                   e.target.value = "";
                 }}
-              />
-              <div className="flex flex-row items-center justify-center gap-4 pt-12">
+              /> */}
+              {/* <div className="flex flex-row items-center justify-center gap-4 pt-12">
                 {session ? (
                   <>
                     <div
@@ -353,7 +353,7 @@ const photocontest = ({ posts, winners }) => {
                     Sign in with Google
                   </button>
                 )}
-              </div>
+              </div> */}
               {session && (
                 <button
                   onClick={() => {
@@ -367,7 +367,7 @@ const photocontest = ({ posts, winners }) => {
             </div>
           </div>
         </div>
-        {posts.length > 0 ? (
+        {/* {posts.length > 0 ? (
           <>
             <p className="mt-14 lg:mt-0 text-center text-2xl font-semibold text-[#411F0D]">
               Today's most liked Posts
@@ -397,7 +397,7 @@ const photocontest = ({ posts, winners }) => {
               Be the first one to upload your memory.
             </p>
           </>
-        )}
+        )} */}
         {winners.length > 0 && (
           <div>
             <p className="mt-14 lg:mt-5 text-center text-2xl font-semibold text-[#411F0D]">
