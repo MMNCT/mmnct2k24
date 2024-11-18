@@ -51,7 +51,7 @@ export async function getServerSideProps() {
   let designers = [];
   let content_creators = [];
   let in_houses = [];
-
+  let presidents=[];
   querySnapshot.forEach((doc) => {
     let data = doc.data();
     if (data.position == "coordinator") {
@@ -65,6 +65,9 @@ export async function getServerSideProps() {
     } else if (data.position == "Infra and In-House") {
       in_houses.push(data);
     }
+    else if (data.position == "president") {
+      presidents.push(data);
+    }
   });
   return {
     props: {
@@ -75,6 +78,7 @@ export async function getServerSideProps() {
       designers,
       content_creators,
       in_houses,
+      presidents
     },
   };
 }
@@ -98,11 +102,13 @@ const PastRec = ({
   designers,
   content_creators,
   in_houses,
+  presidents
 }) => {
   const [coordinator, setCoordinator] = useState(coordinators);
   const [matches, setMatches] = useState(matchData);
   const [developer, setDeveloper] = useState(developers);
   const [designer, setDesigner] = useState(designers);
+  const [president, setPresident] = useState(presidents);
   const [content_creator, setContentCreator] = useState(content_creators);
   const[in_house, setInHouse] = useState(in_houses);
   const [selectedChoice, setSelectedChoice] = useState("squads");
@@ -156,7 +162,7 @@ const PastRec = ({
         const designersTemp = [];
         const contentCreatorsTemp = [];
         const inHouseTemp = [];
-
+        const presidentTemp=[];
         teamSnapshot.forEach((doc) => {
           const data = doc.data();
           if(data.edition === edition){
@@ -176,17 +182,22 @@ const PastRec = ({
             case "Infra and In-House":
               inHouseTemp.push(data);
               break;
+            case "president":
+              presidentTemp.push(data);
+              break;  
             default:
               // Handle unexpected positions if necessary
               break;
           }
         }
         });
+        presidentTemp.reverse();
         setCoordinator(coordinatorsTemp);
         setDeveloper(developersTemp);
         setDesigner(designersTemp);
         setContentCreator(contentCreatorsTemp);
         setInHouse(inHouseTemp)
+        setPresident(presidentTemp);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -882,6 +893,9 @@ const PastRec = ({
           Organizing Team
         </span>
       </p>
+      {president.length !== 0 && (
+        <DeveloperComponent text=" Lead Organisers" developers={president} />
+      )}
       {coordinator.length !== 0 && (
         <DeveloperComponent text=" Co-ordinators" developers={coordinator} />
       )}
